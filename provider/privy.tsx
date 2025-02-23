@@ -13,8 +13,7 @@ export default function PrivyProvider({
       config={{
         appearance: {
           theme: "dark",
-          accentColor: "#33e7b8",
-          logo: "/logo.svg",
+          logo: "https://i.postimg.cc/K8M56tVt/sw-arm-OS-text-lime-4x.png",
           walletChainType: "ethereum-only",
           showWalletLoginFirst: true,
         },
