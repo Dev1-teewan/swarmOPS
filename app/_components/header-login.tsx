@@ -1,22 +1,24 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { usePrivy } from "@privy-io/react-auth";
+import { useChatStore } from "../_store/useChatStore";
 import { formatAddress, getWalletProviderLogo } from "@/app/_utils";
 
 const HeaderItem = () => {
-  const router = useRouter();
-  const { ready, authenticated, login, logout, user } = usePrivy();
+  const { setAuthToken } = useChatStore();
+  const { ready, authenticated, login, logout, user, getAccessToken } =
+    usePrivy();
   const disableLogin = !ready;
 
-  const handleAuthAction = () => {
+  const handleAuthAction = async () => {
     if (!authenticated) {
       login();
+      const token = await getAccessToken();
+      setAuthToken(token as string);
     } else {
       logout();
-      router.replace("/");
     }
   };
 

@@ -2,24 +2,31 @@
 
 import React, { useEffect } from "react";
 
-import { useLogin, usePrivy } from "@privy-io/react-auth";
-
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useChatStore } from "../_store/useChatStore";
+import { useLogin, usePrivy } from "@privy-io/react-auth";
 
 const LoginButton: React.FC = () => {
   const router = useRouter();
-
-  const { authenticated, ready } = usePrivy();
+  const { setAuthToken } = useChatStore();
+  const { authenticated, ready, getAccessToken } = usePrivy();
 
   const { login } = useLogin();
 
   useEffect(() => {
-    if (authenticated) {
-      router.replace("/chat");
-    }
-  }, [authenticated, router]);
+    const fetchToken = async () => {
+      if (authenticated) {
+        router.replace("/chat");
+        const token = await getAccessToken();
+        setAuthToken(token as string);
+      }
+    };
+
+    fetchToken();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authenticated]);
 
   if (!ready || authenticated) return <Skeleton className="w-24 h-10" />;
 
