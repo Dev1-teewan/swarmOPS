@@ -1,0 +1,1 @@
+export const CDP_GET_BALANCE_NAME = 'get_balance'; 

@@ -1,0 +1,1 @@
+export const CREATE_SWARM_NAME = 'create_swarm'; 
