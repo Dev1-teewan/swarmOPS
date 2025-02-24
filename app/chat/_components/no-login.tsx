@@ -27,7 +27,7 @@ const NotLoggedInAlert: React.FC = () => {
       <AlertDialogContent className="flex flex-col items-center justify-center">
         <Image src={swarmOsSquare} alt={"swarmOs"} width={50} />
         <h1 className="text-2xl font-bold">You are not logged in</h1>
-        <p className="text-sm text-gray-900">Please login to continue</p>
+        <p className="text-sm">Please login to continue</p>
         <LoginButton />
       </AlertDialogContent>
     </AlertDialog>

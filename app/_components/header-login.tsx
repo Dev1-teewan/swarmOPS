@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { usePrivy } from "@privy-io/react-auth";
 import { formatAddress, getWalletProviderLogo } from "@/app/_utils";
 
 const HeaderItem = () => {
+  const router = useRouter();
   const { ready, authenticated, login, logout, user } = usePrivy();
   const disableLogin = !ready;
 
@@ -14,6 +16,7 @@ const HeaderItem = () => {
       login();
     } else {
       logout();
+      router.replace("/");
     }
   };
 
