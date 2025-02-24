@@ -14,7 +14,7 @@ const PlainHeader = () => {
 
   return (
     <div>
-      <header className="fixed top-0 left-0 right-0 h-16 backdrop-blur-md z-50 px-2 md:px-8 lg:px-14">
+      <header className="fixed top-0 left-0 right-0 h-16 backdrop-blur-md z-50 px-5 md:px-8 lg:px-14">
         <div className="flex items-center justify-between h-full">
           <div className="flex items-center gap-4">
             <div

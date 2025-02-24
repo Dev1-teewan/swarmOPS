@@ -13,7 +13,7 @@ export default function PrivyProvider({
       config={{
         appearance: {
           theme: "dark",
-          logo: "https://i.postimg.cc/K8M56tVt/sw-arm-OS-text-lime-4x.png",
+          logo: "https://i.postimg.cc/YCVtjFky/swarm-OPS-text-lime-4x.png",
           walletChainType: "ethereum-only",
           showWalletLoginFirst: true,
         },
