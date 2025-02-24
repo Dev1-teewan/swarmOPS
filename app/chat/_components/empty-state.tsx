@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Bot, Shield, Zap, Coins, Info } from "lucide-react";
 import { InfoModal } from "./info-modal";
-import GhostsSVG from "@/app/_public/ghosts.svg";
+import GhostsSVG from "@/app/_public/svgs/ghosts.svg";
 import Image from "next/image";
 import InputArea from "./input-area";
 

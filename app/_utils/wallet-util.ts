@@ -1,6 +1,6 @@
 import { StaticImageData } from "next/image";
-import MetaMaskLogo from "@/app/_public/metamask.png";
-import PhantomLogo from "@/app/_public/phantom.png";
+import MetaMaskLogo from "@/app/_public/wallets/metamask.png";
+import PhantomLogo from "@/app/_public/wallets/phantom.png";
 
 const walletProviderLogos: { [key: string]: StaticImageData } = {
   metamask: MetaMaskLogo,
