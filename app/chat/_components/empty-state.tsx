@@ -1,23 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
-import { Bot, Shield, Zap, Coins, Info } from "lucide-react";
+import InputArea from "./input-area";
 import { InfoModal } from "./info-modal";
 import GhostsSVG from "@/app/_public/svgs/ghosts.svg";
-import Image from "next/image";
-import InputArea from "./input-area";
+import { Bot, Shield, Zap, Coins, Info } from "lucide-react";
 
-interface EmptyStateProps {
-  inputMessage: string;
-  setInputMessage: (message: string) => void;
-  handleSendMessage: () => void;
-}
-
-export function EmptyState({
-  inputMessage,
-  setInputMessage,
-  handleSendMessage,
-}: EmptyStateProps) {
+export function EmptyState() {
   const [showInfo, setShowInfo] = useState(false);
 
   return (
@@ -44,11 +34,7 @@ export function EmptyState({
         Execute your trades . Stay hidden. Be the ghost in Blockchain 🕵️‍♂️
       </p>
 
-      <InputArea
-        inputMessage={inputMessage}
-        setInputMessage={setInputMessage}
-        handleSendMessage={handleSendMessage}
-      />
+      <InputArea />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4 mb-12 w-full max-w-3xl">
         {[
@@ -104,3 +90,5 @@ export function EmptyState({
     </div>
   );
 }
+
+export default EmptyState;

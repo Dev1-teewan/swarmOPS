@@ -139,3 +139,19 @@ button.wallet-adapter-button-trigger:hover {
   background-color: #06d6a0 !important;
   color: #000000 !important;
 }
+
+@keyframes custom-bounce {
+  0%,
+  100% {
+    transform: translateY(2px);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(-6px);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+.custom-bounce {
+  animation: custom-bounce 600ms infinite;
+}
