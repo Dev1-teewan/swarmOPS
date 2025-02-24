@@ -16,7 +16,7 @@ import { EmptyState } from "./_components/empty-state";
 // import { ToolInvocationUIPart } from "@ai-sdk/ui-utils";
 // import { useChatStore } from "@/app/store/useChatStore";
 
-export const SwarmBase = () => {
+export default function SwarmBase() {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const { getAccessToken } = usePrivy();
   const [accessToken, setAccessToken] = useState<string>();
@@ -220,6 +220,4 @@ export const SwarmBase = () => {
       `}</style>
     </div>
   );
-};
-
-export default SwarmBase;
+}
