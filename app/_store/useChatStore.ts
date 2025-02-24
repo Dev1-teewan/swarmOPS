@@ -11,20 +11,15 @@ interface ChatSession {
 }
 
 interface ChatStore {
-  initialMessage: string;
   sessions: ChatSession[];
   currentSessionId: number | null;
-  setInitialMessage: (message: string) => void;
   addSession: (model: { name: string; subTxt: string }) => ChatSession;
   setCurrentSession: (sessionId: number) => void;
   setCurrentSessionModalName: (
     currentSessionId: number,
     model: { name: string; subTxt: string }
   ) => void;
-  addMessageToSession: (
-    sessionId: number,
-    message: { role: "user" | "assistant"; content: string }
-  ) => void;
+  addMessageToSession: (sessionId: number, message: Message) => void;
   deleteSession: (sessionId: number) => void;
   getSessionById: (sessionId: number) => ChatSession | undefined;
 }
@@ -32,11 +27,9 @@ interface ChatStore {
 export const useChatStore = create<ChatStore>()(
   persist(
     (set, get) => ({
-      initialMessage: "",
       sessions: [],
       currentSessionId: null,
-      setInitialMessage: (message: string) => set({ initialMessage: message }),
-      addSession: (model) => {
+      addSession: (model = { name: "gpt-3", subTxt: "OpenAI's GPT-3" }) => {
         const newSession = {
           id: Date.now(),
           title: "New Chat",
@@ -52,26 +45,17 @@ export const useChatStore = create<ChatStore>()(
       },
       setCurrentSession: (sessionId: number) =>
         set({ currentSessionId: sessionId }),
-      addMessageToSession: (
-        sessionId: number,
-        message: { role: "user" | "assistant"; content: string }
-      ) => {
+      addMessageToSession: (sessionId: number, message: Message) => {
         set((state) => {
           const updatedSessions = state.sessions.map((session) => {
             if (session.id === sessionId) {
-              const newMessage: Message = {
-                id: String(Date.now()),
-                content: message.content,
-                role: message.role,
-              };
-
               return {
                 ...session,
                 title:
                   session.title === "New Chat" && message.role === "user"
                     ? message.content.slice(0, 30) + "..."
                     : session.title,
-                messages: [...session.messages, newMessage],
+                messages: [...session.messages, message],
               };
             }
             return session;
