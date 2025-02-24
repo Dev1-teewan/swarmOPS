@@ -6,10 +6,9 @@ import { useState } from "react";
 import HeaderItem from "./header-login";
 import swarmOs from "@/app/_public/swarmOPS-text-lime@4x.png";
 import swarmOsSquare from "@/app/_public/swarmOPS-500x500-transparent@4x.png";
-// import MenuList from "./layout/MenuList";
+import MenuList from "./menu-list";
 
 const PlainHeader = () => {
-  //   const [collapsed, setCollapsed] = useState(true);
   const [isSidebarVisible, setSidebarVisible] = useState(false);
 
   return (
@@ -34,6 +33,7 @@ const PlainHeader = () => {
           </div>
         </div>
       </header>
+
       <div
         className={`fixed left-0 h-full w-50 bg-zinc-900 transform transition-transform duration-300 ease-in-out z-50 pt-4 ${
           isSidebarVisible ? "translate-x-0" : "-translate-x-full"
@@ -46,7 +46,12 @@ const PlainHeader = () => {
             <Image src={swarmOs} alt="swarmOs" width={80} />
           </Link>
         </div>
-        {/* <MenuList sider={{ collapsed: false }} showIcons={true} /> */}
+        <MenuList
+          sider={{
+            collapsed: false,
+          }}
+          showIcons={true}
+        />
       </div>
 
       {typeof window !== "undefined" &&
