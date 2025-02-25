@@ -24,7 +24,7 @@ interface Strategy {
 const strategies: Strategy[] = [
   {
     id: "meme_coin_trading",
-    title: "Meme Coin Trading",
+    title: "Meme Trading",
     description: "High-risk trading for viral tokens",
     icon: Rocket,
   },
@@ -176,7 +176,7 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
 
       // Transaction logic
       const provider = window.ethereum;
-      await wallet.switchChain(8453);
+      await wallet.switchChain(84532);
 
       const txRequests: TransactionRequest[] = combinedData.deposit.wallets.map(
         (walletAllocation: WalletAllocation, index: number) => {
@@ -186,7 +186,7 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
             value: ethers
               .parseEther(walletAllocation.amount.toString())
               .toString(16),
-            chainId: 8453,
+            chainId: 84532,
           };
         }
       );
@@ -230,37 +230,37 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
         content: "Confirming deposit...",
       });
 
-      const result = await createSwarmWithWallets(combinedData);
+      // const result = await createSwarmWithWallets(combinedData);
 
-      const newSwarm: SwarmData = {
-        id: result.swarm.id,
-        alias: combinedData.swarm.name,
-        strategy: combinedData.swarm.strategy,
-        riskLevel: combinedData.swarm.riskLevel,
-        privacyLevel: combinedData.swarm.privacyLevel,
-        // PROBLEM HERE!!
-        wallets: result.wallets.map((wallet: SubWallet, index: number) => ({
-          id: wallet.id,
-          alias: `${combinedData.swarm.name} Wallet ${index + 1}`,
-          address: wallet.publicKey,
-          amount: 0,
-        })),
-        tags: [
-          combinedData.swarm.strategy,
-          `${combinedData.swarm.riskLevel} risk`,
-          `${combinedData.swarm.privacyLevel} privacy`,
-        ],
-        totalBalance: 0,
-      };
+      // const newSwarm: SwarmData = {
+      //   id: result.swarm.id,
+      //   alias: combinedData.swarm.name,
+      //   strategy: combinedData.swarm.strategy,
+      //   riskLevel: combinedData.swarm.riskLevel,
+      //   privacyLevel: combinedData.swarm.privacyLevel,
+      //   // PROBLEM HERE!!
+      //   wallets: result.wallets.map((wallet: SubWallet, index: number) => ({
+      //     id: wallet.id,
+      //     alias: `${combinedData.swarm.name} Wallet ${index + 1}`,
+      //     address: wallet.publicKey,
+      //     amount: 0,
+      //   })),
+      //   tags: [
+      //     combinedData.swarm.strategy,
+      //     `${combinedData.swarm.riskLevel} risk`,
+      //     `${combinedData.swarm.privacyLevel} privacy`,
+      //   ],
+      //   totalBalance: 0,
+      // };
 
-      onSubmit(newSwarm);
+      // onSubmit(newSwarm);
 
-      // addToolResult({
-      //   toolCallId,
-      //   result: {
-      //     message: "Swarm created successfully", // todo: Put txHash inside
-      //   },
-      // });
+      addToolResult({
+        toolCallId,
+        result: {
+          message: "Swarm created successfully", // todo: Put txHash inside
+        },
+      });
 
       messageApi.destroy();
       messageApi.success("Swarm created successfully");
@@ -361,7 +361,7 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
               }
               className="grid grid-cols-3 gap-1"
             >
-              {["low", "medium", "high"].map((level) => (
+              {["LOW", "MEDIUM", "HIGH"].map((level) => (
                 <div key={level}>
                   <RadioGroupItem
                     value={level}
@@ -391,7 +391,7 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
               }
               className="grid grid-cols-3 gap-1"
             >
-              {["low", "medium", "high"].map((level) => (
+              {["LOW", "MEDIUM", "HIGH"].map((level) => (
                 <div key={level}>
                   <RadioGroupItem
                     value={level}
