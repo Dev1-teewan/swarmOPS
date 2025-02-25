@@ -29,6 +29,16 @@ interface ChatStore {
   getLatestCurrentSession: () => number | null;
   getSessionById: (sessionId: number) => ChatSession | undefined;
   setResponseLoading: (isLoading: boolean) => void;
+  addToolResult: ({
+    toolCallId,
+    result,
+  }: {
+    toolCallId: string;
+    result: any;
+  }) => void;
+  setAddToolResult: (
+    addToolResult: (params: { toolCallId: string; result: any }) => void
+  ) => void;
 }
 
 export const useChatStore = create<ChatStore>()(
@@ -114,6 +124,14 @@ export const useChatStore = create<ChatStore>()(
         });
       },
       setResponseLoading: (isLoading) => set({ isResponseLoading: isLoading }),
+      addToolResult: ({ toolCallId, result }) => {
+        console.log("Tool result", toolCallId, result);
+      },
+      setAddToolResult: (addToolResult) => {
+        if (get().addToolResult !== addToolResult) {
+          set({ addToolResult });
+        }
+      },
     }),
     {
       name: "chat-storage",

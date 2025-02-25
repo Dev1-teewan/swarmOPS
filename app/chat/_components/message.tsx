@@ -26,6 +26,7 @@ export function Message({ msg }: MessageProps) {
               .map((part) => (
                 <ToolUI
                   key={part.toolInvocation.toolCallId}
+                  toolCallId={part.toolInvocation.toolCallId}
                   tool={part.toolInvocation.toolName}
                 />
               ))}

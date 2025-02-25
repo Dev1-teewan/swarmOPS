@@ -16,15 +16,19 @@ const ChatInput: React.FC<ChatInputProps> = ({ onNewSession }) => {
   const sessionId = Number(params?.sessionId);
 
   const [mounted, setMounted] = React.useState(false);
-  const { setCurrentSession, getLatestCurrentSession, setResponseLoading } =
-    useChatStore();
+  const {
+    setCurrentSession,
+    getLatestCurrentSession,
+    setResponseLoading,
+    setAddToolResult,
+  } = useChatStore();
   const { authToken, selectedSwarm, addMessageToSession } = useChatStore();
 
   React.useEffect(() => {
     setMounted(true);
   }, []);
 
-  const { input, setInput, handleSubmit } = useChat({
+  const { input, setInput, handleSubmit, addToolResult } = useChat({
     maxSteps: 20,
     api: "/api/agent/sendMessage",
     headers: {
@@ -39,6 +43,12 @@ const ChatInput: React.FC<ChatInputProps> = ({ onNewSession }) => {
       setResponseLoading(false);
     },
   });
+  const addToolResultRef = React.useRef(addToolResult);
+
+  React.useEffect(() => {
+    addToolResultRef.current = addToolResult;
+    setAddToolResult(addToolResultRef.current);
+  }, []);
 
   if (!mounted) {
     return null;
