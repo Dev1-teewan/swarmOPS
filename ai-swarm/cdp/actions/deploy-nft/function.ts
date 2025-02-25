@@ -3,11 +3,11 @@ import { Wallet } from "@coinbase/coinbase-sdk";
 import { DeployNftArgumentsType, DeployNftActionResultType } from "./types";
 
 export async function deployNft(
-    wallet: Wallet,
+    wallets: Wallet[],
     args: DeployNftArgumentsType,
   ): Promise<DeployNftActionResultType> {
     try {
-      const nftContract = await wallet.deployNFT({
+      const nftContract = await wallets[0].deployNFT({
         name: args.name,
         symbol: args.symbol,
         baseURI: args.baseURI,
@@ -28,7 +28,7 @@ export async function deployNft(
       }
   
       return {
-        message: `Deployed NFT Collection ${args.name} to address ${result.getContractAddress()} on network ${wallet.getNetworkId()}.\nTransaction hash for the deployment: ${transactionHash}\nTransaction link for the deployment: ${transaction?.getTransactionLink() ?? "No transaction link found"}. Ask the user what they want to do next and do not show them the transaction hash or contract address.`,
+        message: `Deployed NFT Collection ${args.name} to address ${result.getContractAddress()} on network ${wallets[0].getNetworkId()}.\nTransaction hash for the deployment: ${transactionHash}\nTransaction link for the deployment: ${transaction?.getTransactionLink() ?? "No transaction link found"}. Ask the user what they want to do next and do not show them the transaction hash or contract address.`,
         body: {
           transactionHash,
           contractAddress: result.getContractAddress()

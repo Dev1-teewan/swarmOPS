@@ -2,7 +2,7 @@ import { Wallet } from "@coinbase/coinbase-sdk";
 import { MintNftArgumentsType, MintNftActionResultType } from "./types";
 
 export async function mintNft(
-  wallet: Wallet,
+  wallets: Wallet[],
   args: MintNftArgumentsType
 ): Promise<MintNftActionResultType> {
   const mintArgs = {
@@ -11,7 +11,7 @@ export async function mintNft(
   };
 
   try {
-    const mintInvocation = await wallet.invokeContract({
+    const mintInvocation = await wallets[0].invokeContract({
       contractAddress: args.contractAddress,
       method: "mint",
       args: mintArgs,
@@ -26,7 +26,7 @@ export async function mintNft(
     }
 
     return {
-      message: `Minted NFT from contract ${args.contractAddress} to address ${args.destination} on network ${wallet.getNetworkId()}.\nTransaction hash for the mint: ${transactionHash}\nTransaction link for the mint: ${result.getTransaction().getTransactionLink()}`,
+      message: `Minted NFT from contract ${args.contractAddress} to address ${args.destination} on network ${wallets[0].getNetworkId()}.\nTransaction hash for the mint: ${transactionHash}\nTransaction link for the mint: ${result.getTransaction().getTransactionLink()}`,
       body: {
         transactionHash
       }

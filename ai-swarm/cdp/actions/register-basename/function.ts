@@ -122,11 +122,11 @@ function createRegisterContractMethodArgs(
 }
 
 export async function registerBasename(
-  wallet: Wallet,
+  wallets: Wallet[],
   args: RegisterBasenameArgumentsType,
 ): Promise<RegisterBasenameActionResultType> {
-  const addressId = (await wallet.getDefaultAddress()).getId();
-  const isMainnet = wallet.getNetworkId() === Coinbase.networks.BaseMainnet;
+  const addressId = (await wallets[0].getDefaultAddress()).getId();
+  const isMainnet = wallets[0].getNetworkId() === Coinbase.networks.BaseMainnet;
 
   const suffix = isMainnet ? ".base.eth" : ".basetest.eth";
   if (!args.basename.endsWith(suffix)) {
@@ -140,7 +140,7 @@ export async function registerBasename(
       ? BASENAMES_REGISTRAR_CONTROLLER_ADDRESS_MAINNET
       : BASENAMES_REGISTRAR_CONTROLLER_ADDRESS_TESTNET;
 
-    const invocation = await wallet.invokeContract({
+    const invocation = await wallets[0].invokeContract({
       contractAddress,
       method: "register",
       args: registerArgs,

@@ -3,11 +3,11 @@ import { Wallet } from "@coinbase/coinbase-sdk";
 import type { TradeArgumentsType, TradeActionResultType } from "./types";
 
 export async function trade(
-  wallet: Wallet,
+  wallets: Wallet[],
   args: TradeArgumentsType
 ): Promise<TradeActionResultType> {
   try {
-    const tradeResult = await wallet.createTrade({
+    const tradeResult = await wallets[0].createTrade({
       amount: args.amount,
       fromAssetId: args.fromAssetId,
       toAssetId: args.toAssetId,

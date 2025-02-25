@@ -2,12 +2,12 @@ import { Wallet } from "@coinbase/coinbase-sdk";
 import { RequestFaucetFundsArgumentsType, RequestFaucetFundsActionResultType } from "./types";
 
 export async function requestFaucetFunds(
-  wallet: Wallet,
+  wallets: Wallet[],
   args: RequestFaucetFundsArgumentsType,
 ): Promise<RequestFaucetFundsActionResultType> {
   try {
     // Request funds from the faucet
-    const faucetTx = await wallet.faucet(args.assetId || undefined);
+    const faucetTx = await wallets[0].faucet(args.assetId || undefined);
 
     // Wait for the faucet transaction to be confirmed
     const result = await faucetTx.wait();

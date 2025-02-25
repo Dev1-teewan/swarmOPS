@@ -3,11 +3,11 @@ import { Wallet } from "@coinbase/coinbase-sdk";
 import type { TransferArgumentsType, TransferActionResultType } from "./types";
 
 export async function transfer(
-  wallet: Wallet,
+  wallets: Wallet[],
   args: TransferArgumentsType,
 ): Promise<TransferActionResultType> {
   try {
-    const transferResult = await wallet.createTransfer({
+    const transferResult = await wallets[0].createTransfer({
       amount: args.amount,
       assetId: args.assetId,
       destination: args.destination,
