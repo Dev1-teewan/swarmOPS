@@ -52,12 +52,15 @@ const ChatInput: React.FC<ChatInputProps> = ({
   useEffect(() => {
     addToolResultRef.current = addToolResult;
     setAddToolResult(addToolResultRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (inputMessage) {
       setInput(inputMessage);
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputMessage]);
 
   if (!mounted) {

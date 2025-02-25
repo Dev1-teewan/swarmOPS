@@ -81,7 +81,8 @@ export async function POST(request: NextRequest) {
     }
     console.log({ subWallets });
 
-    const { data, error } = await supabase
+    // data, error not in use
+    const {} = await supabase
       .from("sub_wallets")
       .insert(
         subWallets.map((subwallet) => ({
@@ -134,12 +135,12 @@ export async function GET(request: Request) {
   }
 }
 
-const getNetworkId = (): string => {
-  if (process.env.NODE_ENV === "production") {
-    return "base-mainnet";
-  }
-  return "base-sepolia";
-};
+// const getNetworkId = (): string => {
+//   if (process.env.NODE_ENV === "production") {
+//     return "base-mainnet";
+//   }
+//   return "base-sepolia";
+// };
 
 // Example usage
 // const str = "WalletAddress{ addressId: '0x46243548Cf7d4266787682Bde01300d86E8aA375', networkId: 'base-sepolia', walletId: '5a22e852-7c00-4736-9d86-4766c39f4d59' }";

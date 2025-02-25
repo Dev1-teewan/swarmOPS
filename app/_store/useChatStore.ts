@@ -34,10 +34,10 @@ interface ChatStore {
     result,
   }: {
     toolCallId: string;
-    result: any;
+    result: unknown;
   }) => void;
   setAddToolResult: (
-    addToolResult: (params: { toolCallId: string; result: any }) => void
+    addToolResult: (params: { toolCallId: string; result: unknown }) => void
   ) => void;
 }
 

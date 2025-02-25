@@ -13,8 +13,8 @@ export interface WalletAllocation {
 
 interface DepositFormProps {
   privacyLevel: string;
-  formData: any;
-  onSubmit: (combinedData: any) => void;
+  formData: Record<string, unknown>;
+  onSubmit: (combinedData: { swarm: Record<string, unknown>; deposit: { amount: number; wallets: WalletAllocation[] } }) => void;
 }
 
 type Action =
@@ -34,7 +34,7 @@ interface State {
   wallets: WalletAllocation[];
 }
 
-const MINIMUM_RENT = 0.00203928; // in SOL
+// const MINIMUM_RENT = 0.00203928;
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -201,10 +201,10 @@ export function DepositForm({
     dispatch({ type: "INITIALIZE_WALLETS", count: walletCount });
   }, [privacyLevel]);
 
-  const totalAllocation = state.wallets.reduce(
-    (sum, wallet) => sum + wallet.amount + MINIMUM_RENT,
-    0
-  );
+  // const totalAllocation = state.wallets.reduce(
+  //   (sum, wallet) => sum + wallet.amount + MINIMUM_RENT,
+  //   0
+  // );
 
   const [isSubmitted, setIsSubmitted] = React.useState(false);
 

@@ -66,8 +66,11 @@ interface SwarmData {
 }
 
 interface CreateSwarmProps {
-  onSubmit: (swarmData: any) => void;
-  addToolResult: any; // to fix
+  onSubmit: (swarmData: SwarmData) => void;
+  addToolResult: (result: {
+    toolCallId: string;
+    result: { message: string };
+  }) => void;
   toolCallId: string;
 }
 
@@ -84,9 +87,9 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
   });
   const { user } = usePrivy();
   const { wallets } = useWallets();
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const { fetchWithAuth } = useAuthenticatedRequest();
-  
+
   const wallet = wallets[0];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -102,13 +105,27 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
       return;
     }
 
-    setIsLoading(true);
+    // setIsLoading(true);
   };
 
-  const createSwarmWithWallets = async (
-    combinedData: any
-  ): Promise<{
-    swarm: any; // to fix
+  const createSwarmWithWallets = async (combinedData: {
+    swarm: {
+      name: string;
+      strategy: string;
+      riskLevel: string;
+      privacyLevel: string;
+    };
+    deposit: {
+      wallets: WalletAllocation[];
+    };
+  }): Promise<{
+    swarm: {
+      id: string;
+      name: string;
+      strategy: string;
+      risk: string;
+      privacy: string;
+    };
     wallets: SubWallet[];
   }> => {
     try {
@@ -193,9 +210,19 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
     }
   };
 
-  const handleCombinedSubmit = async (combinedData: any) => {
+  const handleCombinedSubmit = async (combinedData: {
+    swarm: {
+      name: string;
+      strategy: string;
+      riskLevel: string;
+      privacyLevel: string;
+    };
+    deposit: {
+      wallets: WalletAllocation[];
+    };
+  }) => {
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
       // messageApi.open({
       //   type: "loading",
       //   content: "Confirming deposit...",
@@ -210,10 +237,10 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
         riskLevel: combinedData.swarm.riskLevel,
         privacyLevel: combinedData.swarm.privacyLevel,
         // PROBLEM HERE!!
-        wallets: result.wallets.map((wallet: any, index: number) => ({
+        wallets: result.wallets.map((wallet: SubWallet, index: number) => ({
           id: wallet.id,
           alias: `${combinedData.swarm.name} Wallet ${index + 1}`,
-          address: wallet.public_key,
+          address: wallet.publicKey,
           amount: 0,
         })),
         tags: [
@@ -249,7 +276,7 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
       // messageApi.error(errorMessage);
       console.error("Error creating swarm:", errorMessage);
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false);
     }
   };
 
