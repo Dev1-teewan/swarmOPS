@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 
+import { message } from "antd";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { ethers, TransactionRequest } from "ethers";
@@ -89,6 +90,7 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
   const { wallets } = useWallets();
   // const [isLoading, setIsLoading] = useState(false);
   const { fetchWithAuth } = useAuthenticatedRequest();
+  const [messageApi, contextHolder] = message.useMessage();
 
   const wallet = wallets[0];
 
@@ -101,7 +103,7 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
       !formData.riskLevel ||
       !formData.privacyLevel
     ) {
-      // messageApi.error("Please fill in all required fields");
+      messageApi.error("Please fill in all required fields");
       return;
     }
 
@@ -130,11 +132,11 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
   }> => {
     try {
       // First create swarm in database
-      // messageApi.open({
-      //   type: "loading",
-      //   content: "Creating swarm...",
-      //   duration: 4,
-      // });
+      messageApi.open({
+        type: "loading",
+        content: "Creating swarm...",
+        duration: 4,
+      });
 
       const swarmData = {
         ownerWallet: user?.wallet?.address,
@@ -166,11 +168,11 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
       console.log({ newWallets }); // need publicKey
 
       // Finally send Base to all wallets
-      // messageApi.open({
-      //   type: "loading",
-      //   content: "Funding wallets...",
-      //   duration: 1,
-      // });
+      messageApi.open({
+        type: "loading",
+        content: "Funding wallets...",
+        duration: 1,
+      });
 
       // Transaction logic
       const provider = window.ethereum;
@@ -223,10 +225,10 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
   }) => {
     try {
       // setIsLoading(true);
-      // messageApi.open({
-      //   type: "loading",
-      //   content: "Confirming deposit...",
-      // });
+      messageApi.open({
+        type: "loading",
+        content: "Confirming deposit...",
+      });
 
       const result = await createSwarmWithWallets(combinedData);
 
@@ -253,15 +255,15 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
 
       onSubmit(newSwarm);
 
-      addToolResult({
-        toolCallId,
-        result: {
-          message: "Swarm created successfully", // todo: Put txHash inside
-        },
-      });
+      // addToolResult({
+      //   toolCallId,
+      //   result: {
+      //     message: "Swarm created successfully", // todo: Put txHash inside
+      //   },
+      // });
 
-      // messageApi.destroy();
-      // messageApi.success("Swarm created successfully");
+      messageApi.destroy();
+      messageApi.success("Swarm created successfully");
 
       setFormData({
         strategy: "meme_coin_trading",
@@ -270,10 +272,10 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
         privacyLevel: "",
       });
     } catch (error) {
-      // messageApi.destroy();
+      messageApi.destroy();
       const errorMessage =
         error instanceof Error ? error.message : "Failed to create swarm";
-      // messageApi.error(errorMessage);
+      messageApi.error(errorMessage);
       console.error("Error creating swarm:", errorMessage);
     } finally {
       // setIsLoading(false);
@@ -282,6 +284,7 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
 
   return (
     <>
+      {contextHolder}
       <div className="bg-[#001510]/95 border-[#00FF9D]/20 text-white backdrop-blur-lg max-w-4xl p-6 rounded-lg">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
