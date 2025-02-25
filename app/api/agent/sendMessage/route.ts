@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CdpAgentkit } from "@/ai-swarm";
 import { anthropic } from "@ai-sdk/anthropic";
 import { cdpTools } from "@/ai-swarm/cdp/ai-sdk";

@@ -15,6 +15,7 @@ interface ChatStore {
   sessions: ChatSession[];
   selectedSwarm: string | null;
   currentSessionId: number | null;
+  isResponseLoading: boolean;
   setAuthToken: (token: string) => void;
   addSession: (model?: { name: string; subTxt: string }) => ChatSession;
   setSelectedSwarm: (swarmId: string) => void;
@@ -27,6 +28,7 @@ interface ChatStore {
   deleteSession: (sessionId: number) => void;
   getLatestCurrentSession: () => number | null;
   getSessionById: (sessionId: number) => ChatSession | undefined;
+  setResponseLoading: (isLoading: boolean) => void;
 }
 
 export const useChatStore = create<ChatStore>()(
@@ -36,6 +38,7 @@ export const useChatStore = create<ChatStore>()(
       sessions: [],
       selectedSwarm: "a0137492-291d-4e14-9844-168979c0bfbc",
       currentSessionId: 0,
+      isResponseLoading: false,
       setAuthToken: (token: string) => set({ authToken: "Bearer " + token }),
       addSession: (
         model = {
@@ -110,6 +113,7 @@ export const useChatStore = create<ChatStore>()(
           return { sessions: updatedSessions };
         });
       },
+      setResponseLoading: (isLoading) => set({ isResponseLoading: isLoading }),
     }),
     {
       name: "chat-storage",

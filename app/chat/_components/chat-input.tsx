@@ -16,7 +16,8 @@ const ChatInput: React.FC<ChatInputProps> = ({ onNewSession }) => {
   const sessionId = Number(params?.sessionId);
 
   const [mounted, setMounted] = React.useState(false);
-  const { setCurrentSession, getLatestCurrentSession } = useChatStore();
+  const { setCurrentSession, getLatestCurrentSession, setResponseLoading } =
+    useChatStore();
   const { authToken, selectedSwarm, addMessageToSession } = useChatStore();
 
   React.useEffect(() => {
@@ -35,6 +36,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onNewSession }) => {
     onFinish: async (message) => {
       // Add message to the session
       addMessageToSession(getLatestCurrentSession() as number, message);
+      setResponseLoading(false);
     },
   });
 
@@ -47,6 +49,8 @@ const ChatInput: React.FC<ChatInputProps> = ({ onNewSession }) => {
       if (onNewSession) {
         onNewSession();
       }
+
+      setResponseLoading(true);
 
       // Create user message
       const userMessage = {
