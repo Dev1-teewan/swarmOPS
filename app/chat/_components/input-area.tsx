@@ -5,7 +5,11 @@ import ChatInput from "./chat-input";
 
 const inputSuggestions = ["Create a swarm", "Execute swap", "View portfolio"];
 
-const InputArea = () => {
+interface InputAreaProps {
+  onNewSession?: () => number;
+}
+
+const InputArea: React.FC<InputAreaProps> = ({ onNewSession }) => {
   const handleSuggestionClick = (suggestion: string) => {
     // setInputMessage(suggestion);
     console.log(suggestion);
@@ -13,7 +17,7 @@ const InputArea = () => {
 
   return (
     <div className="flex-shrink-0 p-4 border-t border-emerald-500 rounded-t-xl bg-zinc-800 w-full max-w-3xl mx-auto">
-      <ChatInput />
+      <ChatInput onNewSession={onNewSession} />
       <div className="mt-3 flex gap-2 flex-wrap">
         {inputSuggestions.map((suggestion) => (
           <span

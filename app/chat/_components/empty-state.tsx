@@ -6,8 +6,13 @@ import InputArea from "./input-area";
 import { InfoModal } from "./info-modal";
 import GhostsSVG from "@/app/_public/svgs/ghosts.svg";
 import { Bot, Shield, Zap, Coins, Info } from "lucide-react";
+import React from "react";
 
-export function EmptyState() {
+interface EmptyStateProps {
+  onNewSession: () => number;
+}
+
+const EmptyState: React.FC<EmptyStateProps> = ({ onNewSession }) => {
   const [showInfo, setShowInfo] = useState(false);
 
   return (
@@ -34,7 +39,7 @@ export function EmptyState() {
         Execute your trades . Stay hidden. Be the ghost in Blockchain 🕵️‍♂️
       </p>
 
-      <InputArea />
+      <InputArea onNewSession={onNewSession} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4 mb-12 w-full max-w-3xl">
         {[
@@ -89,6 +94,6 @@ export function EmptyState() {
       <InfoModal open={showInfo} onOpenChange={setShowInfo} />
     </div>
   );
-}
+};
 
 export default EmptyState;

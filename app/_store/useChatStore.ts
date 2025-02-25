@@ -25,6 +25,7 @@ interface ChatStore {
   ) => void;
   addMessageToSession: (sessionId: number, message: Message) => void;
   deleteSession: (sessionId: number) => void;
+  getLatestCurrentSession: () => number | null;
   getSessionById: (sessionId: number) => ChatSession | undefined;
 }
 
@@ -34,9 +35,14 @@ export const useChatStore = create<ChatStore>()(
       authToken: "",
       sessions: [],
       selectedSwarm: "a0137492-291d-4e14-9844-168979c0bfbc",
-      currentSessionId: null,
+      currentSessionId: 0,
       setAuthToken: (token: string) => set({ authToken: "Bearer " + token }),
-      addSession: (model = { name: "gpt-3", subTxt: "OpenAI's GPT-3" }) => {
+      addSession: (
+        model = {
+          name: "Claude",
+          subTxt: "Claude 3.5 Sonnet",
+        }
+      ) => {
         const newSession = {
           id: Date.now(),
           title: "New Chat",
@@ -85,6 +91,9 @@ export const useChatStore = create<ChatStore>()(
       getSessionById: (sessionId: number) => {
         const session = get().sessions.find((s) => s.id === sessionId);
         return session;
+      },
+      getLatestCurrentSession: () => {
+        return get().currentSessionId;
       },
       setCurrentSessionModalName: (currentSessionId, model) => {
         set((state) => {

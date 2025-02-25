@@ -1,11 +1,23 @@
 "use client";
 
 import React from "react";
-import { Send } from "lucide-react";
 import { useChat } from "ai/react";
+import { Send } from "lucide-react";
+import { useParams } from "next/navigation";
+import { generateId } from "@ai-sdk/provider-utils";
+import { useChatStore } from "@/app/_store/useChatStore";
 
-const ChatInput = () => {
+interface ChatInputProps {
+  onNewSession?: () => number;
+}
+
+const ChatInput: React.FC<ChatInputProps> = ({ onNewSession }) => {
+  const params = useParams();
+  const sessionId = Number(params?.sessionId);
+
   const [mounted, setMounted] = React.useState(false);
+  const { setCurrentSession, getLatestCurrentSession } = useChatStore();
+  const { authToken, selectedSwarm, addMessageToSession } = useChatStore();
 
   React.useEffect(() => {
     setMounted(true);
@@ -15,19 +27,56 @@ const ChatInput = () => {
     maxSteps: 20,
     api: "/api/agent/sendMessage",
     headers: {
-      authorization: "",
+      authorization: authToken,
     },
     body: {
-      swarmId: "a0137492-291d-4e14-9844-168979c0bfbc",
+      swarmId: selectedSwarm,
     },
-    onFinish: async (messages) => {
-      console.log("Messages:", messages);
+    onFinish: async (message) => {
+      // Add message to the session
+      addMessageToSession(getLatestCurrentSession() as number, message);
     },
   });
 
   if (!mounted) {
     return null;
   }
+
+  const onHandleSubmit = async () => {
+    if (!sessionId) {
+      if (onNewSession) {
+        onNewSession();
+      }
+
+      // Create user message
+      const userMessage = {
+        id: generateId(),
+        role: "user" as const,
+        content: input,
+        createdAt: new Date(),
+      };
+
+      // Add user message to the session
+      addMessageToSession(getLatestCurrentSession() as number, userMessage);
+
+      handleSubmit();
+    } else {
+      setCurrentSession(sessionId);
+
+      // Create user message
+      const userMessage = {
+        id: generateId(),
+        role: "user" as const,
+        content: input,
+        createdAt: new Date(),
+      };
+
+      // Add user message to the session
+      addMessageToSession(getLatestCurrentSession() as number, userMessage);
+
+      handleSubmit();
+    }
+  };
 
   return (
     <div className="flex gap-2">
@@ -38,7 +87,7 @@ const ChatInput = () => {
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
-            handleSubmit();
+            onHandleSubmit();
           }
         }}
         placeholder="Type your message..."
@@ -46,7 +95,7 @@ const ChatInput = () => {
       />
 
       <button
-        onClick={() => handleSubmit()}
+        onClick={() => onHandleSubmit()}
         className="bg-emerald-800 text-[#ddf813] p-3 rounded-lg hover:bg-emerald-900 transition-colors flex items-center justify-center"
       >
         <Send size={20} />
