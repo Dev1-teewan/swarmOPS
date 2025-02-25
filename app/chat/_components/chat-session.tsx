@@ -4,6 +4,7 @@ import { Message } from "ai";
 import InputArea from "./input-area";
 import LoadingMessage from "./loading-message";
 import { useChatStore } from "@/app/_store/useChatStore";
+import { Message as MessageUI } from "./message";
 
 interface ChatSessionProps {
   sessionId: number;
@@ -18,20 +19,7 @@ export function ChatSession({ initialMessages }: ChatSessionProps) {
       <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
         <div>
           {initialMessages.map((msg, index) => (
-            <div
-              key={index}
-              className={`flex ${
-                msg.role === "user" ? "justify-end" : "justify-start"
-              }`}
-            >
-              <div
-                className={`p-3 rounded-lg max-w-[80%] ${
-                  msg.role === "user" ? "bg-[#ddf813] text-zinc-900" : ""
-                }`}
-              >
-                {msg.content}
-              </div>
-            </div>
+            <MessageUI key={index} msg={msg} />
           ))}
           {isResponseLoading && <LoadingMessage />}
         </div>
