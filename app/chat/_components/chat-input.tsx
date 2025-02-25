@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useChat } from "ai/react";
+import { useChat } from "@ai-sdk/react";
 import { Send } from "lucide-react";
 import { useParams } from "next/navigation";
 import { generateId } from "@ai-sdk/provider-utils";
