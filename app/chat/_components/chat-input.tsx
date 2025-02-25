@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useChat } from "ai/react";
 import { Send } from "lucide-react";
 import { useParams } from "next/navigation";
@@ -9,13 +9,17 @@ import { useChatStore } from "@/app/_store/useChatStore";
 
 interface ChatInputProps {
   onNewSession?: () => number;
+  inputMessage?: string;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ onNewSession }) => {
+const ChatInput: React.FC<ChatInputProps> = ({
+  onNewSession,
+  inputMessage,
+}) => {
   const params = useParams();
   const sessionId = Number(params?.sessionId);
 
-  const [mounted, setMounted] = React.useState(false);
+  const [mounted, setMounted] = useState(false);
   const {
     setCurrentSession,
     getLatestCurrentSession,
@@ -45,10 +49,16 @@ const ChatInput: React.FC<ChatInputProps> = ({ onNewSession }) => {
   });
   const addToolResultRef = React.useRef(addToolResult);
 
-  React.useEffect(() => {
+  useEffect(() => {
     addToolResultRef.current = addToolResult;
     setAddToolResult(addToolResultRef.current);
   }, []);
+
+  useEffect(() => {
+    if (inputMessage) {
+      setInput(inputMessage);
+    }
+  }, [inputMessage]);
 
   if (!mounted) {
     return null;
