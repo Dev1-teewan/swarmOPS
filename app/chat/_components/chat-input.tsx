@@ -6,6 +6,7 @@ import { Send } from "lucide-react";
 import { useParams } from "next/navigation";
 import { generateId } from "@ai-sdk/provider-utils";
 import { useChatStore } from "@/app/_store/useChatStore";
+import { message } from "antd";
 
 interface ChatInputProps {
   onNewSession?: () => number;
@@ -32,7 +33,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
     setMounted(true);
   }, []);
 
-  const { input, setInput, handleSubmit, addToolResult } = useChat({
+  const { messages: AIM,append, input, setInput, addToolResult } = useChat({
     maxSteps: 20,
     api: "/api/agent/sendMessage",
     headers: {
@@ -47,13 +48,13 @@ const ChatInput: React.FC<ChatInputProps> = ({
       setResponseLoading(false);
     },
   });
-  const addToolResultRef = React.useRef(addToolResult);
+  // const addToolResultRef = React.useRef(addToolResult);
 
-  useEffect(() => {
-    addToolResultRef.current = addToolResult;
-    setAddToolResult(addToolResultRef.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   addToolResultRef.current = addToolResult;
+  //   setAddToolResult(addToolResultRef.current);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   useEffect(() => {
     if (inputMessage) {
@@ -68,6 +69,12 @@ const ChatInput: React.FC<ChatInputProps> = ({
   }
 
   const onHandleSubmit = async () => {
+    // addToolResult({
+    //   toolCallId: "toolu_01TYnW8bTRVw9rdi9K68Z1Vx",
+    //   result: {
+    //     message: "User clicked on the send button",
+    //   },
+    // });
     if (!sessionId) {
       if (onNewSession) {
         onNewSession();
@@ -86,7 +93,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
       // Add user message to the session
       addMessageToSession(getLatestCurrentSession() as number, userMessage);
 
-      handleSubmit();
+      append(userMessage);
     } else {
       setCurrentSession(sessionId);
 
@@ -101,12 +108,13 @@ const ChatInput: React.FC<ChatInputProps> = ({
       // Add user message to the session
       addMessageToSession(getLatestCurrentSession() as number, userMessage);
 
-      handleSubmit();
+      append(userMessage);
     }
   };
 
   return (
     <div className="flex gap-2">
+      {console.log("messages from ai", AIM[AIM.length - 1])}
       <input
         type="text"
         value={input}
