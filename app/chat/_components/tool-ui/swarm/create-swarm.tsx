@@ -288,17 +288,17 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
   return (
     <>
       {contextHolder}
-      <div className="bg-[#001510]/95 border-[#00FF9D]/20 text-white backdrop-blur-lg max-w-4xl p-6 rounded-lg">
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="bg-zinc-900 text-white rounded-lg border border-[#ddf813] p-6 max-w-4xl mt-2">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label className="text-base">Swarm Name</Label>
             <Input
-              placeholder="Name"
+              placeholder="Enter swarm name"
               value={formData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
               }
-              className="bg-[#001510]/80 border-[#00FF9D]/20 text-white"
+              className="bg-zinc-800 border-[#ddf813]/20"
             />
           </div>
 
@@ -324,16 +324,16 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
                     />
                     <Label
                       htmlFor={strategy.id}
-                      className={`flex flex-col h-full p-2 rounded-lg border-2 border-[#00FF9D]/20 bg-black/40 
-                        transition-colors duration-300 cursor-pointer
-                        ${
-                          strategy.disabled
-                            ? "opacity-50 cursor-not-allowed"
-                            : "hover:bg-[#002018]/90 peer-data peer-data-[state=checked]:bg-[#002018]"
-                        }`}
+                      className={`flex flex-col h-full p-2 rounded-lg border-2 border-[#ddf813]/20 bg-zinc-800 
+                      transition-colors duration-300 cursor-pointer
+                      ${
+                        strategy.disabled
+                          ? "opacity-50 cursor-not-allowed"
+                          : "hover:bg-zinc-700 peer-data-[state=checked]:border-[#ddf813]"
+                      }`}
                     >
                       <div className="flex items-center gap-2 mb-1">
-                        <Icon className="h-4 w-4 text-[#00FF9D]" />
+                        <Icon className="h-4 w-4 text-[#ddf813]" />
                         <span className="font-semibold text-sm">
                           {strategy.title}
                         </span>
@@ -356,36 +356,6 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
           </div>
 
           <div className="space-y-2">
-            <Label className="text-base">Risk Level</Label>
-            <RadioGroup
-              value={formData.riskLevel}
-              onValueChange={(value) =>
-                setFormData({ ...formData, riskLevel: value })
-              }
-              className="grid grid-cols-3 gap-1"
-            >
-              {["LOW", "MEDIUM", "HIGH"].map((level) => (
-                <div key={level}>
-                  <RadioGroupItem
-                    value={level}
-                    id={`risk-${level}`}
-                    className="peer sr-only"
-                  />
-                  <Label
-                    htmlFor={`risk-${level}`}
-                    className="flex items-center justify-center p-1 rounded-md border border-[#00FF9D]/20 bg-black/40
-                      hover:bg-[#002018]/90 transition-colors duration-300
-                      peer-data-[state=checked]:border-[#00FF9D] peer-data-[state=checked]:bg-[#002018]
-                      cursor-pointer capitalize text-sm"
-                  >
-                    {level}
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
-          </div>
-
-          <div className="space-y-2">
             <Label className="text-base">Privacy Level</Label>
             <RadioGroup
               value={formData.privacyLevel}
@@ -394,7 +364,7 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
               }
               className="grid grid-cols-3 gap-1"
             >
-              {["LOW", "MEDIUM", "HIGH"].map((level) => (
+              {["low", "medium", "high"].map((level) => (
                 <div key={level}>
                   <RadioGroupItem
                     value={level}
@@ -403,10 +373,10 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
                   />
                   <Label
                     htmlFor={`privacy-${level}`}
-                    className="flex items-center justify-center p-1 rounded-md border border-[#00FF9D]/20 bg-black/40
-                      hover:bg-[#002018]/90 transition-colors duration-300
-                      peer-data-[state=checked]:border-[#00FF9D] peer-data-[state=checked]:bg-[#002018]
-                      cursor-pointer capitalize text-sm"
+                    className="flex items-center justify-center p-1 rounded-md border border-[#ddf813]/20 bg-zinc-800
+                    over:bg-zinc-700 transition-colors duration-300
+                    peer-data-[state=checked]:border-[#ddf813] peer-data-[state=checked]:bg-zinc-700
+                    cursor-pointer capitalize text-sm"
                   >
                     {level}
                   </Label>
@@ -414,7 +384,6 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
               ))}
             </RadioGroup>
           </div>
-
           <DepositForm
             privacyLevel={formData.privacyLevel}
             formData={formData}

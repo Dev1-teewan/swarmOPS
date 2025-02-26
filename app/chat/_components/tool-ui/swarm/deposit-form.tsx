@@ -1,10 +1,12 @@
-import React from "react";
 import Image from "next/image";
-import { useEffect, useReducer } from "react";
+import Decimal from "decimal.js";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, RefreshCw, Shuffle } from "lucide-react";
+import { usePrivy } from "@privy-io/react-auth";
+import { Plus, RefreshCw, Shuffle } from "lucide-react";
+import { useState, useEffect, useReducer } from "react";
+import { getPortfolio } from "@/services/coinbase-onchainkit/portfolio";
 
 export interface WalletAllocation {
   amount: number;
@@ -47,7 +49,9 @@ interface State {
   wallets: WalletAllocation[];
 }
 
-// const MINIMUM_RENT = 0.00203928;
+function roundDownTo10Decimals(amount: number): number {
+  return new Decimal(amount).toDecimalPlaces(10, Decimal.ROUND_DOWN).toNumber();
+}
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -55,7 +59,9 @@ function reducer(state: State, action: Action): State {
       const amount = action.value === "" ? 0 : parseFloat(action.value);
       const newWallets = state.wallets.map((wallet) => ({
         ...wallet,
-        amount: (amount * Number(wallet.percentage)) / 100,
+        amount: roundDownTo10Decimals(
+          (amount * Number(wallet.percentage)) / 100
+        ),
       }));
       return {
         ...state,
@@ -106,7 +112,9 @@ function reducer(state: State, action: Action): State {
       const newWallets = state.wallets.map((wallet) => ({
         ...wallet,
         percentage: equalPercentage,
-        amount: (state.depositAmount * Number(equalPercentage)) / 100,
+        amount: roundDownTo10Decimals(
+          (state.depositAmount * Number(equalPercentage)) / 100
+        ),
       }));
       return { ...state, wallets: newWallets };
     }
@@ -126,7 +134,9 @@ function reducer(state: State, action: Action): State {
         newWallets[i] = {
           ...newWallets[i],
           percentage,
-          amount: (state.depositAmount * Number(percentage)) / 100,
+          amount: roundDownTo10Decimals(
+            (state.depositAmount * Number(percentage)) / 100
+          ),
         };
         remainingPercentage -= Number(percentage);
       }
@@ -135,7 +145,9 @@ function reducer(state: State, action: Action): State {
       newWallets[0] = {
         ...newWallets[0],
         percentage: remainingPercentage.toFixed(2),
-        amount: (state.depositAmount * remainingPercentage) / 100,
+        amount: roundDownTo10Decimals(
+          (state.depositAmount * remainingPercentage) / 100
+        ),
       };
 
       return { ...state, wallets: newWallets };
@@ -155,22 +167,9 @@ function reducer(state: State, action: Action): State {
       const equalPercentage = (100 / newWallets.length).toFixed(2);
       newWallets.forEach((wallet) => {
         wallet.percentage = equalPercentage;
-        wallet.amount = (state.depositAmount * Number(equalPercentage)) / 100;
-      });
-      return { ...state, wallets: newWallets };
-    }
-
-    case "REMOVE_WALLET": {
-      if (state.wallets.length <= 2) {
-        // toast.error("Minimum 2 wallets required")
-        return state;
-      }
-      const newWallets = state.wallets.filter((_, i) => i !== action.index);
-      // Reset to equal distribution
-      const equalPercentage = (100 / newWallets.length).toFixed(2);
-      newWallets.forEach((wallet) => {
-        wallet.percentage = equalPercentage;
-        wallet.amount = (state.depositAmount * Number(equalPercentage)) / 100;
+        wallet.amount = roundDownTo10Decimals(
+          (state.depositAmount * Number(equalPercentage)) / 100
+        );
       });
       return { ...state, wallets: newWallets };
     }
@@ -202,6 +201,9 @@ export function DepositForm({
   formData,
   onSubmit,
 }: DepositFormProps) {
+  const { user } = usePrivy();
+  // console.log({ user });
+  const [ownedEth, setOwnedEth] = useState<number>(0);
   const [state, dispatch] = useReducer(reducer, {
     depositAmount: 0,
     inputValue: "0",
@@ -210,36 +212,56 @@ export function DepositForm({
 
   useEffect(() => {
     const walletCount =
-      privacyLevel === "LOW" ? 3 : privacyLevel === "MEDIUM" ? 6 : 9;
+      privacyLevel.toLowerCase() === "high"
+        ? 9
+        : privacyLevel.toLowerCase() === "medium"
+        ? 6
+        : 3;
     dispatch({ type: "INITIALIZE_WALLETS", count: walletCount });
-    console.log(privacyLevel, walletCount);
   }, [privacyLevel]);
 
-  // const totalAllocation = state.wallets.reduce(
-  //   (sum, wallet) => sum + wallet.amount + MINIMUM_RENT,
-  //   0
-  // );
+  useEffect(() => {
+    const fetchEthBalance = async () => {
+      if (!user || !user.wallet) {
+        throw new Error("No wallet found in privy");
+      }
+      const ownerWalletAddress = user.wallet.address;
+      const { portfolios } = await getPortfolio([
+        ownerWalletAddress as `0x${string}`,
+      ]);
+      const portfolio = portfolios[0];
+      const ethPortfolio = portfolio.tokenBalances.find(
+        (p) => p.symbol === "ETH"
+      );
 
-  const [isSubmitted, setIsSubmitted] = React.useState(false);
+      if (!ethPortfolio) {
+        return setOwnedEth(0);
+      }
+      const ethBalance = new Decimal(ethPortfolio.cryptoBalance)
+        .div(new Decimal(10).pow(ethPortfolio.decimals))
+        .toFixed(10);
+      setOwnedEth(Number(ethBalance));
+    };
+
+    fetchEthBalance();
+  }, [user]);
+
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   return (
     <div className="space-y-6 mt-4 text-sm">
       <div className="space-y-2">
         <Label className="text-base flex items-center gap-1">
           Deposit Amount
-          <div className="inline-flex items-center gap-1 text-[#00FF9D]/90 ml-1">
-            <span>(in</span>
-            <div className="flex items-center">
-              <span>ETH </span>
-              <Image
-                src="https://cdn.jsdelivr.net/gh/trustwallet/assets@master/blockchains/ethereum/info/logo.png"
-                alt="Token icon"
-                className="inline-block rounded-full"
-                width={15}
-                height={15}
-              />
-            </div>
-            <span>)</span>
+          <div className="inline-flex items-center gap-1 text-[#00FF9D]/90">
+            <span className="text-[#ddf813] text-sm">(ETH)</span>
+            <Image
+              src="https://cdn.jsdelivr.net/gh/trustwallet/assets@master/blockchains/ethereum/info/logo.png"
+              alt="Token icon"
+              className="inline-block rounded-full"
+              width={15}
+              height={15}
+            />
           </div>
         </Label>
         <Input
@@ -257,8 +279,13 @@ export function DepositForm({
               });
             }
           }}
-          className="bg-[#001510]/80 border-[#00FF9D]/20 text-white"
+          className={`bg-zinc-800 border-[#ddf813]/20 ${
+            parseFloat(state.inputValue) > ownedEth ? "text-red-500" : ""
+          }`}
         />
+        {ownedEth && (
+          <p className="text-xs text-gray-500">Balance: {ownedEth}</p>
+        )}
       </div>
 
       <div className="space-y-4">
@@ -269,7 +296,7 @@ export function DepositForm({
               variant="outline"
               size="sm"
               onClick={() => dispatch({ type: "RESET_ALLOCATIONS" })}
-              className="bg-[#001510]/80 border-[#00FF9D]/20 hover:bg-[#002018]/90"
+              className="bg-[#665c00]/10 border-[#ddf813]/20 hover:bg-[#ddf813]/30"
             >
               <RefreshCw className="h-4 w-4" />
             </Button>
@@ -277,7 +304,7 @@ export function DepositForm({
               variant="outline"
               size="sm"
               onClick={() => dispatch({ type: "RANDOMIZE_ALLOCATIONS" })}
-              className="bg-[#001510]/80 border-[#00FF9D]/20 hover:bg-[#002018]/90"
+              className="bg-[#665c00]/10 border-[#ddf813]/20 hover:bg-[#ddf813]/30"
             >
               <Shuffle className="h-4 w-4" />
             </Button>
@@ -285,7 +312,7 @@ export function DepositForm({
               variant="outline"
               size="sm"
               onClick={() => dispatch({ type: "ADD_WALLET" })}
-              className="bg-[#001510]/80 border-[#00FF9D]/20 hover:bg-[#002018]/90"
+              className="bg-[#665c00]/10 border-[#ddf813]/20 hover:bg-[#ddf813]/30"
             >
               <Plus className="h-4 w-4" />
             </Button>
@@ -314,17 +341,17 @@ export function DepositForm({
             <tbody>
               {state.wallets.map((wallet, index) => (
                 <tr key={index} className="border-b border-zinc-700">
-                  <td className="px-6 py-4 whitespace-nowrap text-white/60">
+                  <td className="px-6 py-2 whitespace-nowrap text-white/60">
                     {index + 1}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-2 whitespace-nowrap">
                     <Input
                       value={wallet.amount}
                       disabled
                       className="bg-black/40 border-[#00FF9D]/20 text-white"
                     />
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-2 whitespace-nowrap">
                     <div className="flex gap-2 items-center">
                       <Input
                         type="number"
@@ -340,24 +367,10 @@ export function DepositForm({
                           dispatch({ type: "FINALIZE_PERCENTAGES" })
                         }
                         disabled={index === 0}
-                        className="bg-black/40 border-[#00FF9D]/20 text-white"
+                        className="bg-black/40 border-[#ddf813]/20 text-white"
                       />
-                      <span className="text-[#00FF9D]">%</span>
+                      <span className="text-[#ddf813]">%</span>
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {index !== 0 && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() =>
-                          dispatch({ type: "REMOVE_WALLET", index })
-                        }
-                        className="ml-2 hover:bg-red-500/20 hover:text-red-500"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    )}
                   </td>
                 </tr>
               ))}
@@ -365,7 +378,6 @@ export function DepositForm({
           </table>
         </div>
       </div>
-
       <Button
         onClick={() => {
           const combinedData = {
@@ -382,13 +394,15 @@ export function DepositForm({
           dispatch({ type: "RESET_FORM" });
           setIsSubmitted(true);
         }}
-        disabled={isSubmitted}
-        className={`w-full transition-colors duration-300 border-[#00FF9D]/20 
-          ${
-            isSubmitted
-              ? "bg-zinc-500 text-zinc-300 cursor-not-allowed"
-              : "bg-[#001510]/80 hover:bg-[#002018]/90 text-[#00FF9D]"
-          }`}
+        disabled={isSubmitted || parseFloat(state.inputValue) > ownedEth}
+        className={`w-full ${
+          isSubmitted ||
+          !state.depositAmount ||
+          state.depositAmount <= 0 ||
+          parseFloat(state.inputValue) > ownedEth
+            ? "bg-zinc-700 text-zinc-400"
+            : "bg-zinc-800 hover:bg-zinc-700 text-[#ddf813] border-[#ddf813]/20"
+        }`}
       >
         {isSubmitted ? "Confirmed" : "Confirm Deposit"}
       </Button>

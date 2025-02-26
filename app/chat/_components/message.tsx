@@ -41,7 +41,6 @@ export function Message({ msg }: MessageProps) {
                     key={part.toolInvocation.toolCallId}
                     toolCallId={part.toolInvocation.toolCallId}
                     tool={part.toolInvocation.toolName}
-                    args={part.toolInvocation.args}
                   />
                 ) : (
                   <div key={part.toolInvocation.toolCallId} className="my-4">
@@ -51,7 +50,7 @@ export function Message({ msg }: MessageProps) {
               )}
           </div>
         )}
-        <div>{after}</div>
+        {after && <div className="mt-2">{after}</div>}
       </div>
     </div>
   );
