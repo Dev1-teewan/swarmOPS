@@ -13,8 +13,21 @@ export interface WalletAllocation {
 
 interface DepositFormProps {
   privacyLevel: string;
-  formData: { name: string; strategy: string; riskLevel: string; privacyLevel: string; };
-  onSubmit:(combinedData: { swarm: { name: string; strategy: string; riskLevel: string; privacyLevel: string; }; deposit: { wallets: WalletAllocation[] } }) => void;
+  formData: {
+    name: string;
+    strategy: string;
+    riskLevel: string;
+    privacyLevel: string;
+  };
+  onSubmit: (combinedData: {
+    swarm: {
+      name: string;
+      strategy: string;
+      riskLevel: string;
+      privacyLevel: string;
+    };
+    deposit: { wallets: WalletAllocation[] };
+  }) => void;
 }
 
 type Action =
@@ -197,8 +210,9 @@ export function DepositForm({
 
   useEffect(() => {
     const walletCount =
-      privacyLevel === "low" ? 3 : privacyLevel === "medium" ? 6 : 9;
+      privacyLevel === "LOW" ? 3 : privacyLevel === "MEDIUM" ? 6 : 9;
     dispatch({ type: "INITIALIZE_WALLETS", count: walletCount });
+    console.log(privacyLevel, walletCount);
   }, [privacyLevel]);
 
   // const totalAllocation = state.wallets.reduce(

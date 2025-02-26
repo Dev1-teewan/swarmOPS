@@ -72,12 +72,14 @@ interface CreateSwarmProps {
     toolCallId: string;
     result: { message: string };
   }) => void;
+  setResponseLoading: (loading: boolean) => void;
   toolCallId: string;
 }
 
 const CreateSwarm: React.FC<CreateSwarmProps> = ({
   onSubmit,
   addToolResult,
+  setResponseLoading,
   toolCallId,
 }) => {
   const [formData, setFormData] = useState({
@@ -255,6 +257,7 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
 
       onSubmit(newSwarm);
 
+      setResponseLoading(true);
       addToolResult({
         toolCallId,
         result: {

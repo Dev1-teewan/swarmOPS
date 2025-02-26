@@ -9,7 +9,7 @@ interface ToolUIProps {
 
 export const ToolUI = ({ toolCallId, tool }: ToolUIProps) => {
   // console.log(tool, "here");
-  const { addToolResult } = useChatStore();
+  const { addToolResult, setResponseLoading } = useChatStore();
 
   switch (tool) {
     case CREATE_SWARM_NAME:
@@ -21,6 +21,7 @@ export const ToolUI = ({ toolCallId, tool }: ToolUIProps) => {
             // Not required
           }
           addToolResult={addToolResult}
+          setResponseLoading={setResponseLoading}
           toolCallId={toolCallId}
         />
       );
