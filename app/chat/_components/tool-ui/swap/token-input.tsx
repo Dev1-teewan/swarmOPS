@@ -4,12 +4,14 @@ import React from "react";
 import Image from "next/image";
 import { Token } from "./token-display";
 import TokenSelect from "./token-select";
+import { Wallet } from "lucide-react"; // Add this import
 
 interface Props {
   label: string;
   amount: string;
   onChange?: (amount: string) => void;
   token: Token | null;
+  tokenPrice: string| null
   onChangeToken?: (token: Token | null) => void;
   balance?: string;
   isValid?: boolean;
@@ -21,6 +23,7 @@ const TokenInput: React.FC<Props> = ({
   onChange,
   token,
   onChangeToken,
+  tokenPrice,
   balance,
   isValid,
 }) => {
@@ -34,28 +37,19 @@ const TokenInput: React.FC<Props> = ({
     >
       <div className="flex items-center justify-between">
         <p className="text-sm font-bold text-black dark:text-white">{label}</p>
-        {balance && <p className="text-xs text-gray-500">Balance: {balance}</p>}
+        {balance && (
+          <div className="flex items-center text-gray-400">
+            <Wallet className="w-4 h-4 mr-1" />
+            <p className="text-xs">Balance: {balance}</p>
+          </div>
+        )}
       </div>
       <div className="flex items-center w-full">
-        <div className="w-full">
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => onChange && onChange(e.target.value)}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            className={`w-full bg-transparent border-none outline-none ${
-              balance && !isValid ? "text-red-500" : "dark:text-white text-black"
-            }`}
-            disabled={!onChange}
-            placeholder="0.00"
-          />
-        </div>
         {onChangeToken ? (
           <TokenSelect value={token} onChange={onChangeToken} />
         ) : (
           token && (
-            <div className="w-fit shrink-0 flex items-center bg-neutral-200 dark:bg-neutral-700 rounded-md px-2 py-1 gap-2 cursor-pointer transition-colors duration-200">
+            <div className="w-fit shrink-0 flex items-center bg-neutral-200 dark:bg-neutral-700 rounded-md px-2 py-1 gap-2 cursor-pointer transition-colors duration-200 h-12">
               <Image
                 src={token.logoUri!}
                 alt={token.name}
@@ -67,6 +61,25 @@ const TokenInput: React.FC<Props> = ({
             </div>
           )
         )}
+        <div className="flex flex-col w-full h-10 justify-between">
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => onChange && onChange(e.target.value)}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            className={`w-full bg-transparent border-none outline-none text-right text-lg ${
+              balance && !isValid ? "text-red-500" : "dark:text-white text-black"
+            }`}
+            disabled={!onChange}
+            placeholder="0.00"
+          />
+          {(tokenPrice && amount) && (
+            <p className="text-xs text-gray-400 text-right">
+              ~ ${(parseFloat(amount) * parseFloat(tokenPrice)).toFixed(2)} USD
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

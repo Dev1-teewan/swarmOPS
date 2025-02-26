@@ -28,8 +28,8 @@ export const ToolUI = ({ toolCallId, tool }: ToolUIProps) => {
         <Swap
           initialInputToken={null}
           initialOutputToken={null}
-          inputLabel="Input Token"
-          outputLabel="Output Token"
+          inputLabel="Selling"
+          outputLabel="Buying"
           initialInputAmount="0"
           swapText="Swap"
           swappingText="Swapping..."

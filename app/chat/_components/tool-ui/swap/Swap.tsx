@@ -18,6 +18,7 @@ import { Swarm } from "@/app/api/swarms/route";
 import { usePrivy } from "@privy-io/react-auth";
 import { getQuote } from "@/services/coinbase-onchainkit/quote";
 import { getPortfolio } from "@/services/coinbase-onchainkit/portfolio";
+import { getMoralis } from "@/services/moralis/client";
 
 interface Props {
   initialInputToken: Token | null;
@@ -36,6 +37,8 @@ interface Props {
   setResponseLoading: (loading: boolean) => void;
 }
 
+const WETH_ADDRESS = "0x4200000000000000000000000000000000000006"
+
 const Swap: React.FC<Props> = ({
   initialInputToken,
   initialOutputToken,
@@ -53,10 +56,12 @@ const Swap: React.FC<Props> = ({
     initialInputAmount || ""
   );
   const [inputToken, setInputToken] = useState<Token | null>(initialInputToken);
+  const [inputTokenPrice, setInputTokenPrice] = useState<string | null>(null);
   const [outputAmount, setOutputAmount] = useState<string>("");
   const [outputToken, setOutputToken] = useState<Token | null>(
     initialOutputToken
   );
+  const [outputTokenPrice, setOutputTokenPrice] = useState<string | null>(null);
 
   const [isQuoteLoading, setIsQuoteLoading] = useState<boolean>(false);
   const [quoteResponse, setQuoteResponse] = useState<any | null>(null); // Adjust the type as needed
@@ -175,6 +180,52 @@ const Swap: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
+    const getInputTokenPrice = async () => {
+      if (!inputToken) return null
+      try {
+        const moralis = await getMoralis()
+        const tokenPriceResult = await moralis.EvmApi.token.getTokenPrice({
+          chain: "0x2105", // base
+          include: "percent_change",
+          address: inputToken?.symbol.toLowerCase() === 'eth' 
+            ? WETH_ADDRESS // as a proxy
+            : inputToken.address
+        })
+        
+        const tokenPrice = tokenPriceResult.toJSON()
+        setInputTokenPrice(tokenPrice.usdPrice.toString());
+      } catch (error) {
+        console.error("Failed to fetch swarms:", error);
+      }
+    };
+
+    getInputTokenPrice();
+  }, [inputToken]);
+
+  useEffect(() => {
+    const getOutputTokenPrice = async () => {
+      if (!outputToken) return null
+      try {
+        const moralis = await getMoralis()
+        const tokenPriceResult = await moralis.EvmApi.token.getTokenPrice({
+          chain: "0x2105", // base
+          include: "percent_change",
+          address: outputToken?.symbol.toLowerCase() === 'eth' 
+            ? WETH_ADDRESS // as a proxy
+            : outputToken.address
+        })
+        
+        const tokenPrice = tokenPriceResult.toJSON()
+        setOutputTokenPrice(tokenPrice.usdPrice.toString());
+      } catch (error) {
+        console.error("Failed to fetch swarms:", error);
+      }
+    };
+
+    getOutputTokenPrice();
+  }, [outputToken]);
+
+  useEffect(() => {
     const fetchSwarms = async () => {
       try {
         const accessToken = (await getAccessToken()) || "";
@@ -252,6 +303,42 @@ const Swap: React.FC<Props> = ({
 
   return (
     <div className="flex flex-col gap-2 p-4 border border-[#ddf813] rounded-lg">
+        {!swarms || swarms.length === 0 ? (
+          <span className="text-sm font-bold pl-1 text-white flex items-center">
+            <AlertTriangle className="h-4 w-4" /> No swarms created yet
+          </span>
+        ) : (
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-bold pl-1">Executing Swarm:</span>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <div className="w-fit shrink-0 flex items-center bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 rounded-md px-2 py-1 gap-2 cursor-pointer transition-colors duration-200 h-10">
+                  <span
+                    className={
+                      selectedSwarm
+                        ? "text-[#ddf813] dark:text-[#ddf813] text-sm font-bold pl-2"
+                        : "text-zinc-500 dark:text-zinc-400 text-sm font-bold pl-2"
+                    }
+                  >
+                    {selectedSwarm ? selectedSwarm.name : "Select"}
+                  </span>
+                  <ChevronDown className="h-4 w-4 shrink-0 opacity-50 text-black dark:text-white" />
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="dark:bg-black bg-white max-h-60 overflow-y-auto">
+                {swarms?.map((swarm) => (
+                  <DropdownMenuItem
+                    key={swarm.id}
+                    className="px-1 py-1 text-black dark:text-white text-sm font-bold hover:bg-neutral-300 dark:hover:bg-neutral-600"
+                    onSelect={() => setSelectedSwarm(swarm)}
+                  >
+                    {swarm.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        )}
       <div className="flex flex-col gap-2 items-center w-full">
         <TokenInput
           label={inputLabel}
@@ -259,8 +346,9 @@ const Swap: React.FC<Props> = ({
           onChange={setInputAmount}
           token={inputToken}
           onChangeToken={setInputToken}
-          balance={inputTokenBalance} // Pass the balance to TokenInput
-          isValid={isInputAmountValid} // Pass validity state to TokenInput
+          tokenPrice={inputTokenPrice}
+          balance={inputTokenBalance}
+          isValid={isInputAmountValid}
         />
         <Button
           variant="ghost"
@@ -275,45 +363,11 @@ const Swap: React.FC<Props> = ({
           amount={outputAmount}
           token={outputToken}
           onChangeToken={setOutputToken}
+          tokenPrice={outputTokenPrice}
         />
       </div>
       <Separator />
       <div className="flex flex-col gap-2">
-        {!swarms || swarms.length === 0 ? (
-          <span className="text-sm font-bold pl-1 text-white flex items-center gap-1">
-            <AlertTriangle className="h-4 w-4" /> No swarms created yet
-          </span>
-        ) : (
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-bold pl-1">Executing Swarm:</span>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <div className="w-fit shrink-0 flex items-center bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 rounded-md px-2 py-1 gap-2 cursor-pointer transition-colors duration-200">
-                  <span
-                    className={
-                      selectedSwarm
-                        ? "text-black dark:text-white text-sm font-bold"
-                        : "text-zinc-500 dark:text-zinc-400 text-sm font-bold"
-                    }
-                  >
-                    {selectedSwarm ? selectedSwarm.name : "Select"}
-                  </span>
-                  <ChevronDown className="h-4 w-4 shrink-0 opacity-50 text-black dark:text-white" />
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="dark:bg-black bg-white max-h-60 overflow-y-auto">
-                {swarms?.map((swarm) => (
-                  <DropdownMenuItem
-                    key={swarm.id}                    className="px-1 py-1 text-black dark:text-white text-sm font-bold hover:bg-neutral-300 dark:hover:bg-neutral-600"
-                    onSelect={() => setSelectedSwarm(swarm)}
-                  >
-                    {swarm.name}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        )}
         <Button
           variant="default"
           className="w-full bg-[#ddf813] text-zinc-900 hover:bg-[#b8cf06]"
