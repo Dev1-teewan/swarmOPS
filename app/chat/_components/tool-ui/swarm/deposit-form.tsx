@@ -13,8 +13,8 @@ export interface WalletAllocation {
 
 interface DepositFormProps {
   privacyLevel: string;
-  formData: Record<string, unknown>;
-  onSubmit: (combinedData: { swarm: Record<string, unknown>; deposit: { amount: number; wallets: WalletAllocation[] } }) => void;
+  formData: { name: string; strategy: string; riskLevel: string; privacyLevel: string; };
+  onSubmit:(combinedData: { swarm: { name: string; strategy: string; riskLevel: string; privacyLevel: string; }; deposit: { wallets: WalletAllocation[] } }) => void;
 }
 
 type Action =

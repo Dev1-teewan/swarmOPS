@@ -230,30 +230,30 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
         content: "Confirming deposit...",
       });
 
-      // const result = await createSwarmWithWallets(combinedData);
+      const result = await createSwarmWithWallets(combinedData);
 
-      // const newSwarm: SwarmData = {
-      //   id: result.swarm.id,
-      //   alias: combinedData.swarm.name,
-      //   strategy: combinedData.swarm.strategy,
-      //   riskLevel: combinedData.swarm.riskLevel,
-      //   privacyLevel: combinedData.swarm.privacyLevel,
-      //   // PROBLEM HERE!!
-      //   wallets: result.wallets.map((wallet: SubWallet, index: number) => ({
-      //     id: wallet.id,
-      //     alias: `${combinedData.swarm.name} Wallet ${index + 1}`,
-      //     address: wallet.publicKey,
-      //     amount: 0,
-      //   })),
-      //   tags: [
-      //     combinedData.swarm.strategy,
-      //     `${combinedData.swarm.riskLevel} risk`,
-      //     `${combinedData.swarm.privacyLevel} privacy`,
-      //   ],
-      //   totalBalance: 0,
-      // };
+      const newSwarm: SwarmData = {
+        id: result.swarm.id,
+        alias: combinedData.swarm.name,
+        strategy: combinedData.swarm.strategy,
+        riskLevel: combinedData.swarm.riskLevel,
+        privacyLevel: combinedData.swarm.privacyLevel,
+        // PROBLEM HERE!!
+        wallets: result.wallets.map((wallet: SubWallet, index: number) => ({
+          id: wallet.id,
+          alias: `${combinedData.swarm.name} Wallet ${index + 1}`,
+          address: wallet.publicKey,
+          amount: 0,
+        })),
+        tags: [
+          combinedData.swarm.strategy,
+          `${combinedData.swarm.riskLevel} risk`,
+          `${combinedData.swarm.privacyLevel} privacy`,
+        ],
+        totalBalance: 0,
+      };
 
-      // onSubmit(newSwarm);
+      onSubmit(newSwarm);
 
       addToolResult({
         toolCallId,

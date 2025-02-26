@@ -7,6 +7,7 @@ import { convertToApiError, ValidationError } from "@/lib/errors";
 import { verifyTokenAndGetPrivyUser } from "@/services/privy/verify-token-get-user";
 
 export interface SubWallet {
+  id: string
   publicKey: string;
   privateKey: string;
   providerId: string;
@@ -73,6 +74,7 @@ export async function POST(request: NextRequest) {
       const publicKey = walletAddressParsed.addressId;
       const privateKey = walletAddress?.export() as string;
       subWallets.push({
+        id: walletId,
         publicKey,
         privateKey,
         providerId: walletId,

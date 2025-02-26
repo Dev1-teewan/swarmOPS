@@ -18,7 +18,7 @@ export interface IGetSwarmAggregateResults {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { swarm_id: string } }
+  // { params }: { params: { swarm_id: string } }
 ): Promise<NextResponse<IGetSwarmAggregateResults | { error: string }>> {
   try {
     const authResult = await validateWalletAuth(request);
@@ -28,7 +28,9 @@ export async function GET(
     const { userPublicKey } = authResult;
     if (!userPublicKey) throw new ValidationError("No wallet found");
 
-    const { swarm_id } = params;
+    // const { swarm_id } = params;
+    const url = new URL(request.url);
+    const swarm_id = url.pathname.split('/').pop();
     console.log(`Requesting swarm: ${swarm_id}, from ${userPublicKey}`);
 
     const { data, error } = await supabase.rpc(
