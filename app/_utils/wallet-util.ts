@@ -11,6 +11,5 @@ const walletProviderLogos: { [key: string]: StaticImageData } = {
 export const getWalletProviderLogo = (
   provider: string
 ): StaticImageData | null => {
-  console.log("provider", provider);
   return walletProviderLogos[provider];
 };
