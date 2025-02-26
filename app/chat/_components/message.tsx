@@ -17,6 +17,11 @@ export function Message({ msg }: MessageProps) {
   };
 
   const { before, after } = splitContent(msg.content);
+  // console.log(msg.content)
+
+  const toolInvocations = msg.parts
+    ?.filter((part) => part.type === "tool-invocation")
+    .map((part) => part.toolInvocation);
 
   return (
     <div
@@ -31,23 +36,21 @@ export function Message({ msg }: MessageProps) {
         style={{ whiteSpace: "pre-wrap" }}
       >
         <div>{before}</div>
-        {msg.parts && msg.parts.length > 0 && (
+        {toolInvocations && toolInvocations.length > 0 && (
           <div className="flex flex-col gap-4">
-            {msg.parts
-              .filter((part) => part.type === "tool-invocation")
-              .map((part) =>
-                part.toolInvocation.state !== "result" ? (
-                  <ToolUI
-                    key={part.toolInvocation.toolCallId}
-                    toolCallId={part.toolInvocation.toolCallId}
-                    tool={part.toolInvocation.toolName}
-                  />
-                ) : (
-                  <div key={part.toolInvocation.toolCallId} className="my-4">
-                    {part.toolInvocation.result.message}
-                  </div>
-                )
-              )}
+            {toolInvocations.map((invocation) =>
+              invocation.state !== "result" ? (
+                <ToolUI
+                  key={invocation.toolCallId}
+                  toolCallId={invocation.toolCallId}
+                  tool={invocation.toolName}
+                />
+              ) : (
+                <div key={invocation.toolCallId} className="my-4">
+                  {invocation.result.message}
+                </div>
+              )
+            )}
           </div>
         )}
         {after && <div className="mt-2">{after}</div>}

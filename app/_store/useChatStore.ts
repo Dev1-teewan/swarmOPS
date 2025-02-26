@@ -42,6 +42,10 @@ interface ChatStore {
   messages: UIMessage[];
   setMessages: (messages: UIMessage[]) => void;
   getMessages: () => UIMessage[];
+  disableMessage: string;
+  setDisableMessage: (disableMessage: string) => void;
+  status: string;
+  setStatus: (status: string) => void;
 }
 
 export const useChatStore = create<ChatStore>()(
@@ -138,6 +142,10 @@ export const useChatStore = create<ChatStore>()(
       messages: [],
       setMessages: (messages: UIMessage[]) => set({ messages }),
       getMessages: () => get().messages,
+      disableMessage: "",
+      setDisableMessage: (disableMessage) => set({ disableMessage }),
+      status: "",
+      setStatus: (status) => set({ status }),
     }),
     {
       name: "chat-storage",
