@@ -51,6 +51,11 @@ const strategies: Strategy[] = [
   },
 ];
 
+export const getNameFromStrategyId = (id: string | undefined) => {
+  const strategy = strategies.find((s) => s.id === id);
+  return strategy ? strategy.title : null;
+}
+
 interface SwarmData {
   id: string;
   alias: string;

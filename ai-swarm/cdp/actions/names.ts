@@ -8,3 +8,4 @@ export * from "./request-faucet-funds/name";
 export * from "./transfer/name";
 export * from "./create-swarm/name";
 export * from "./swap/name";
+export * from "./show-portfolio/name";

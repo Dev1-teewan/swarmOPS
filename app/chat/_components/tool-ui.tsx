@@ -1,7 +1,8 @@
 import Swap from "./tool-ui/swap/Swap";
 import CreateSwarm from "./tool-ui/swarm/create-swarm";
 import { useChatStore } from "@/app/_store/useChatStore";
-import { CREATE_SWARM_NAME, SWAP_NAME } from "@/ai-swarm/action-names";
+import { CREATE_SWARM_NAME, PORTFOLIO_NAME, SWAP_NAME } from "@/ai-swarm/action-names";
+import SwarmPortfolioView from "./tool-ui/portfolio/portfolio";
 
 interface ToolUIProps {
   toolCallId: string;
@@ -10,7 +11,6 @@ interface ToolUIProps {
 }
 
 export const ToolUI = ({ toolCallId, tool }: ToolUIProps) => {
-  // console.log(tool, "here");
   const { addToolResult, setResponseLoading } = useChatStore();
 
   switch (tool) {
@@ -39,6 +39,15 @@ export const ToolUI = ({ toolCallId, tool }: ToolUIProps) => {
           setResponseLoading={setResponseLoading}
         />
       );
+    case PORTFOLIO_NAME:
+      return (
+        <SwarmPortfolioView
+          addToolResult={addToolResult}
+          toolCallId={toolCallId}
+          onCancel={() => console.log("Swap cancelled")}
+          setResponseLoading={setResponseLoading}
+        />
+      )
     default:
       return <div></div>;
   }
