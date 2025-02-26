@@ -96,22 +96,6 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
 
   const wallet = wallets[0];
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (
-      !formData.name ||
-      !formData.strategy ||
-      !formData.riskLevel ||
-      !formData.privacyLevel
-    ) {
-      messageApi.error("Please fill in all required fields");
-      return;
-    }
-
-    // setIsLoading(true);
-  };
-
   const createSwarmWithWallets = async (combinedData: {
     swarm: {
       name: string;
@@ -285,11 +269,27 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
     }
   };
 
+  const handleCancel = () => {
+    setFormData({
+      strategy: "meme_coin_trading",
+      name: "",
+      riskLevel: "",
+      privacyLevel: "",
+    });
+    setResponseLoading(true);
+    addToolResult({
+      toolCallId,
+      result: {
+        message: "Swarm creation cancelled",
+      },
+    });
+  };
+
   return (
     <>
       {contextHolder}
       <div className="bg-zinc-900 text-white rounded-lg border border-[#ddf813] p-6 max-w-4xl mt-2">
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form className="space-y-6">
           <div className="space-y-2">
             <Label className="text-base">Swarm Name</Label>
             <Input
@@ -388,6 +388,7 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
             privacyLevel={formData.privacyLevel}
             formData={formData}
             onSubmit={handleCombinedSubmit}
+            handleCancel={handleCancel}
           />
         </form>
       </div>

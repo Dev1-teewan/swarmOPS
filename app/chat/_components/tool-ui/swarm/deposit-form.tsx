@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { message } from "antd";
 import Decimal from "decimal.js";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,6 +31,7 @@ interface DepositFormProps {
     };
     deposit: { wallets: WalletAllocation[] };
   }) => void;
+  handleCancel: () => void;
 }
 
 type Action =
@@ -200,6 +202,7 @@ export function DepositForm({
   privacyLevel,
   formData,
   onSubmit,
+  handleCancel,
 }: DepositFormProps) {
   const { user } = usePrivy();
   // console.log({ user });
@@ -209,6 +212,7 @@ export function DepositForm({
     inputValue: "0",
     wallets: [],
   });
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     const walletCount =
@@ -250,6 +254,7 @@ export function DepositForm({
 
   return (
     <div className="space-y-6 mt-4 text-sm">
+      {contextHolder}
       <div className="space-y-2">
         <Label className="text-base flex items-center gap-1">
           Deposit Amount
@@ -380,6 +385,15 @@ export function DepositForm({
       </div>
       <Button
         onClick={() => {
+          if (
+            !formData.name ||
+            !formData.strategy ||
+            !formData.riskLevel ||
+            !formData.privacyLevel
+          ) {
+            messageApi.error("Please fill in all required fields");
+            return;
+          }
           const combinedData = {
             swarm: formData,
             deposit: {
@@ -405,6 +419,15 @@ export function DepositForm({
         }`}
       >
         {isSubmitted ? "Confirmed" : "Confirm Deposit"}
+      </Button>
+      <Button
+        onClick={() => {
+          handleCancel();
+          dispatch({ type: "RESET_FORM" });
+        }}
+        className={`w-full bg-zinc-700 text-zinc-400`}
+      >
+        Cancel
       </Button>
     </div>
   );
