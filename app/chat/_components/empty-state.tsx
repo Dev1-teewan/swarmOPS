@@ -84,7 +84,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({
               className="flex flex-col items-center p-4 rounded-lg border border-zinc-500/20 bg-black/20 backdrop-blur-sm
           hover:bg-zinc-900/90 transition-all duration-300"
             >
-              <Icon className="w-6 h-6 text-emerald-400 opacity-90 mb-2" />
+              <Icon className="w-6 h-6 text-[#ddf813] opacity-90 mb-2" />
               <h3 className="font-medium text-white/90 mb-1">
                 {feature.title}
               </h3>
@@ -97,7 +97,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({
       <div className="flex flex-col items-center gap-4">
         <button
           onClick={() => setShowInfo(true)}
-          className="flex items-center gap-2 text-emerald-400 hover:text-[#00FF9D]/60 transition-colors text-sm"
+          className="flex items-center gap-2 text-zinc-400 hover:opacity-80 transition-colors text-sm"
         >
           <Info className="w-4 h-4" />
           What is a Swarm?

@@ -1,7 +1,7 @@
 const LoadingMessage = () => {
   return (
     <div className="flex justify-start">
-      <div className="p-3 rounded-lg bg-gray-700">
+      <div className="p-3 rounded-lg">
         <div className="flex space-x-1">
           {[0, 1, 2].map((i) => (
             <div

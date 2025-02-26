@@ -18,7 +18,7 @@ const InputArea: React.FC<InputAreaProps> = ({
   handleSendMessage,
 }) => {
   return (
-    <div className="flex-shrink-0 p-4 border-t border-emerald-500 rounded-t-xl bg-zinc-800 w-full max-w-3xl mx-auto">
+    <div className="flex-shrink-0 p-4 border-t border-[#ddf813] rounded-t-xl bg-zinc-800 w-full max-w-3xl mx-auto">
       <ChatInput
         onNewSession={onNewSession}
         inputMessage={inputMessage}
@@ -30,7 +30,7 @@ const InputArea: React.FC<InputAreaProps> = ({
           <span
             key={suggestion}
             onClick={() => setInputMessage(suggestion)}
-            className="cursor-pointer text-emerald-400 hover:text-emerald-300 transition-colors border border-emerald-400 rounded-xl px-2 py-1"
+            className="cursor-pointer text-zinc-300 hover:opacity-80 transition-colors border border-zinc-600 rounded-xl px-2 py-1"
           >
             + {suggestion}
           </span>

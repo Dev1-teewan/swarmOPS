@@ -115,15 +115,15 @@
 }
 
 .custom-button {
-  background-color: #06402b !important;
-  color: #06d6a0 !important;
+  background-color: #3f3f46 !important;
+  color: #ddf813 !important;
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .custom-button,
 button.wallet-adapter-button-trigger {
-  background-color: #003628;
-  color: #06d6a0;
+  background-color: #52525b;
+  color: #ddf813;
   border: none;
   font-weight: bold;
   text-align: center;
@@ -136,8 +136,8 @@ button.wallet-adapter-button-trigger {
 
 .custom-button:hover,
 button.wallet-adapter-button-trigger:hover {
-  background-color: #06d6a0 !important;
-  color: #000000 !important;
+  background-color: #52525b !important;
+  color: #cfe907 !important;
 }
 
 @keyframes custom-bounce {
