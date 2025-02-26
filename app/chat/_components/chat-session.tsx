@@ -9,9 +9,17 @@ import { Message as MessageUI } from "./message";
 interface ChatSessionProps {
   sessionId: number;
   initialMessages: Array<Message>;
+  inputMessage: string;
+  setInputMessage: (message: string) => void;
+  handleSendMessage: () => void;
 }
 
-export function ChatSession({ initialMessages }: ChatSessionProps) {
+export function ChatSession({
+  initialMessages,
+  inputMessage,
+  setInputMessage,
+  handleSendMessage,
+}: ChatSessionProps) {
   const { isResponseLoading } = useChatStore();
 
   return (
@@ -25,7 +33,11 @@ export function ChatSession({ initialMessages }: ChatSessionProps) {
         </div>
       </div>
       <div className="fixed bottom-0 left-0 w-full shadow-md">
-        <InputArea />
+        <InputArea
+          inputMessage={inputMessage}
+          setInputMessage={setInputMessage}
+          handleSendMessage={handleSendMessage}
+        />
       </div>
     </div>
   );

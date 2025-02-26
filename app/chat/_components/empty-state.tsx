@@ -10,9 +10,17 @@ import React from "react";
 
 interface EmptyStateProps {
   onNewSession: () => number;
+  inputMessage: string;
+  setInputMessage: (message: string) => void;
+  handleSendMessage: () => void;
 }
 
-const EmptyState: React.FC<EmptyStateProps> = ({ onNewSession }) => {
+const EmptyState: React.FC<EmptyStateProps> = ({
+  onNewSession,
+  inputMessage,
+  setInputMessage,
+  handleSendMessage,
+}) => {
   const [showInfo, setShowInfo] = useState(false);
 
   return (
@@ -39,7 +47,12 @@ const EmptyState: React.FC<EmptyStateProps> = ({ onNewSession }) => {
         Execute your trades . Stay hidden. Be the ghost in Blockchain 🕵️‍♂️
       </p>
 
-      <InputArea onNewSession={onNewSession} />
+      <InputArea
+        inputMessage={inputMessage}
+        setInputMessage={setInputMessage}
+        handleSendMessage={handleSendMessage}
+        onNewSession={onNewSession}
+      />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4 mb-12 w-full max-w-3xl">
         {[

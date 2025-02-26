@@ -1,128 +1,31 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useChat } from "@ai-sdk/react";
+import React from "react";
 import { Send } from "lucide-react";
-import { useParams } from "next/navigation";
-import { generateId } from "@ai-sdk/provider-utils";
-import { useChatStore } from "@/app/_store/useChatStore";
-import { message } from "antd";
 
 interface ChatInputProps {
   onNewSession?: () => number;
-  inputMessage?: string;
+  inputMessage: string;
+  setInputMessage: (message: string) => void;
+  handleSendMessage: () => void;
 }
 
 const ChatInput: React.FC<ChatInputProps> = ({
-  onNewSession,
+  // onNewSession
   inputMessage,
+  setInputMessage,
+  handleSendMessage,
 }) => {
-  const params = useParams();
-  const sessionId = Number(params?.sessionId);
-
-  const [mounted, setMounted] = useState(false);
-  const {
-    setCurrentSession,
-    getLatestCurrentSession,
-    setResponseLoading,
-    setAddToolResult,
-  } = useChatStore();
-  const { authToken, selectedSwarm, addMessageToSession } = useChatStore();
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const { messages: AIM,append, input, setInput, addToolResult } = useChat({
-    maxSteps: 20,
-    api: "/api/agent/sendMessage",
-    headers: {
-      authorization: authToken,
-    },
-    body: {
-      swarmId: selectedSwarm,
-    },
-    onFinish: async (message) => {
-      // Add message to the session
-      addMessageToSession(getLatestCurrentSession() as number, message);
-      setResponseLoading(false);
-    },
-  });
-  // const addToolResultRef = React.useRef(addToolResult);
-
-  // useEffect(() => {
-  //   addToolResultRef.current = addToolResult;
-  //   setAddToolResult(addToolResultRef.current);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
-  useEffect(() => {
-    if (inputMessage) {
-      setInput(inputMessage);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inputMessage]);
-
-  if (!mounted) {
-    return null;
-  }
-
-  const onHandleSubmit = async () => {
-    // addToolResult({
-    //   toolCallId: "toolu_01TYnW8bTRVw9rdi9K68Z1Vx",
-    //   result: {
-    //     message: "User clicked on the send button",
-    //   },
-    // });
-    if (!sessionId) {
-      if (onNewSession) {
-        onNewSession();
-      }
-
-      setResponseLoading(true);
-
-      // Create user message
-      const userMessage = {
-        id: generateId(),
-        role: "user" as const,
-        content: input,
-        createdAt: new Date(),
-      };
-
-      // Add user message to the session
-      addMessageToSession(getLatestCurrentSession() as number, userMessage);
-
-      append(userMessage);
-    } else {
-      setCurrentSession(sessionId);
-
-      // Create user message
-      const userMessage = {
-        id: generateId(),
-        role: "user" as const,
-        content: input,
-        createdAt: new Date(),
-      };
-
-      // Add user message to the session
-      addMessageToSession(getLatestCurrentSession() as number, userMessage);
-
-      append(userMessage);
-    }
-  };
-
   return (
     <div className="flex gap-2">
-      {console.log("messages from ai", AIM[AIM.length - 1])}
       <input
         type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
+        value={inputMessage}
+        onChange={(e) => setInputMessage(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
-            onHandleSubmit();
+            handleSendMessage();
           }
         }}
         placeholder="Type your message..."
@@ -130,7 +33,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
       />
 
       <button
-        onClick={() => onHandleSubmit()}
+        onClick={() => handleSendMessage()}
         className="bg-emerald-800 text-[#ddf813] p-3 rounded-lg hover:bg-emerald-900 transition-colors flex items-center justify-center"
       >
         <Send size={20} />

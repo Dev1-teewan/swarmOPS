@@ -1,12 +1,12 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Message } from "ai/react";
+import { UIMessage } from "@ai-sdk/ui-utils";
 
 interface ChatSession {
   id: number;
   title: string;
   timestamp: string;
-  messages: Message[];
+  messages: UIMessage[];
   model: { name: string; subTxt: string };
 }
 
@@ -24,7 +24,7 @@ interface ChatStore {
     currentSessionId: number,
     model: { name: string; subTxt: string }
   ) => void;
-  addMessageToSession: (sessionId: number, message: Message) => void;
+  addMessageToSession: (sessionId: number, message: UIMessage) => void;
   deleteSession: (sessionId: number) => void;
   getLatestCurrentSession: () => number | null;
   getSessionById: (sessionId: number) => ChatSession | undefined;
@@ -39,6 +39,9 @@ interface ChatStore {
   setAddToolResult: (
     addToolResult: (params: { toolCallId: string; result: unknown }) => void
   ) => void;
+  messages: UIMessage[];
+  setMessages: (messages: UIMessage[]) => void;
+  getMessages: () => UIMessage[];
 }
 
 export const useChatStore = create<ChatStore>()(
@@ -72,7 +75,7 @@ export const useChatStore = create<ChatStore>()(
       setSelectedSwarm: (swarmId: string) => set({ selectedSwarm: swarmId }),
       setCurrentSession: (sessionId: number) =>
         set({ currentSessionId: sessionId }),
-      addMessageToSession: (sessionId: number, message: Message) => {
+      addMessageToSession: (sessionId: number, message: UIMessage) => {
         set((state) => {
           const updatedSessions = state.sessions.map((session) => {
             if (session.id === sessionId) {
@@ -132,6 +135,9 @@ export const useChatStore = create<ChatStore>()(
           set({ addToolResult });
         }
       },
+      messages: [],
+      setMessages: (messages: UIMessage[]) => set({ messages }),
+      getMessages: () => get().messages,
     }),
     {
       name: "chat-storage",

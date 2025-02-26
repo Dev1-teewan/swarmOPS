@@ -1,22 +1,29 @@
 "use client";
 
 import ChatInput from "./chat-input";
-import React, { useState } from "react";
+
+interface InputAreaProps {
+  inputMessage: string;
+  onNewSession?: () => number;
+  setInputMessage: (message: string) => void;
+  handleSendMessage: () => void;
+}
 
 const inputSuggestions = ["Create a swarm", "Execute swap", "View portfolio"];
 
-interface InputAreaProps {
-  onNewSession?: () => number;
-}
-
-const InputArea: React.FC<InputAreaProps> = ({ onNewSession }) => {
-  const [inputMessage, setInputMessage] = useState("");
-
+const InputArea: React.FC<InputAreaProps> = ({
+  inputMessage,
+  onNewSession,
+  setInputMessage,
+  handleSendMessage,
+}) => {
   return (
     <div className="flex-shrink-0 p-4 border-t border-emerald-500 rounded-t-xl bg-zinc-800 w-full max-w-3xl mx-auto">
       <ChatInput
         onNewSession={onNewSession}
         inputMessage={inputMessage}
+        setInputMessage={setInputMessage}
+        handleSendMessage={handleSendMessage}
       />
       <div className="mt-3 flex gap-2 flex-wrap">
         {inputSuggestions.map((suggestion) => (
