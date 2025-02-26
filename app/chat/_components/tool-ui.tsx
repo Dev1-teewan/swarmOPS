@@ -6,6 +6,7 @@ import { CREATE_SWARM_NAME, SWAP_NAME } from "@/ai-swarm/action-names";
 interface ToolUIProps {
   toolCallId: string;
   tool: string;
+  args?: unknown;
 }
 
 export const ToolUI = ({ toolCallId, tool }: ToolUIProps) => {

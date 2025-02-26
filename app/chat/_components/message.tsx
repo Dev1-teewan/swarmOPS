@@ -41,6 +41,7 @@ export function Message({ msg }: MessageProps) {
                     key={part.toolInvocation.toolCallId}
                     toolCallId={part.toolInvocation.toolCallId}
                     tool={part.toolInvocation.toolName}
+                    args={part.toolInvocation.args}
                   />
                 ) : (
                   <div key={part.toolInvocation.toolCallId} className="my-4">
