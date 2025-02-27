@@ -412,15 +412,8 @@ export function DepositForm({
             setIsSubmitted(true);
           }}
           variant="default"
-          disabled={isSubmitted || parseFloat(state.inputValue) > ownedEth}
-          className={`w-full ${
-            isSubmitted ||
-            !state.depositAmount ||
-            state.depositAmount <= 0 ||
-            parseFloat(state.inputValue) > ownedEth
-              ? "bg-[#ddf813] text-zinc-900 hover:bg-[#b8cf06]"
-              : "bg-zinc-800 hover:bg-zinc-700 text-[#ddf813] border-[#ddf813]/20"
-          }`}
+          disabled={isSubmitted || !state.depositAmount || parseFloat(state.inputValue) > ownedEth}
+          className="w-full bg-[#ddf813] text-zinc-900 hover:bg-[#b8cf06]"
         >
           {isSubmitted ? "Confirmed" : "Confirm Deposit"}
         </Button>

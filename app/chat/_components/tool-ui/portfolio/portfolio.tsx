@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import * as React from "react";
@@ -14,7 +15,6 @@ import Decimal from "decimal.js";
 import { getNameFromStrategyId } from "../swarm/create-swarm";
 import Image from "next/image";
 import { getMoralis } from "@/services/moralis/client";
-import { Button } from "@/components/ui/button";
 
 interface Props {
   addToolResult: (result: {

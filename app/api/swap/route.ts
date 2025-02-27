@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/";
 import { z } from "zod";
-import { convertToApiError, GenericError, ValidationError, ApiError } from "@/lib/errors";
+import { convertToApiError, GenericError, ValidationError } from "@/lib/errors";
 import { APIError, Coinbase, Wallet } from "@coinbase/coinbase-sdk"
 import { ensureCoinbaseConnection } from "@/lib/";
 import { verifyTokenAndGetPrivyUser } from "@/services/privy/verify-token-get-user";

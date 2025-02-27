@@ -90,7 +90,7 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
   const [formData, setFormData] = useState({
     strategy: "meme_coin_trading",
     name: "",
-    riskLevel: "",
+    riskLevel: "Low",
     privacyLevel: "",
   });
   const { user } = usePrivy();
@@ -167,7 +167,7 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
 
       // Transaction logic
       const provider = window.ethereum;
-      await wallet.switchChain(84532);
+      await wallet.switchChain(8453);
 
       const txRequests: TransactionRequest[] = combinedData.deposit.wallets.map(
         (walletAllocation: WalletAllocation, index: number) => {
@@ -177,7 +177,7 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
             value: ethers
               .parseEther(walletAllocation.amount.toString())
               .toString(16),
-            chainId: 84532,
+            chainId: 8453,
           };
         }
       );

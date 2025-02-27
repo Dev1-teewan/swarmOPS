@@ -20,6 +20,7 @@ import { getQuote } from "@/services/coinbase-onchainkit/quote";
 import { getPortfolio } from "@/services/coinbase-onchainkit/portfolio";
 import { getMoralis } from "@/services/moralis/client";
 import { SwapTransactionResult } from "@/app/api/swap/route";
+import { GetSwapQuoteResponse } from "@coinbase/onchainkit/api";
 
 interface Props {
   initialInputToken: Token | null;
@@ -63,7 +64,7 @@ const Swap: React.FC<Props> = ({
   const [outputTokenPrice, setOutputTokenPrice] = useState<string | null>(null);
 
   const [isQuoteLoading, setIsQuoteLoading] = useState<boolean>(false);
-  const [quoteResponse, setQuoteResponse] = useState<any | null>(null); // Adjust the type as needed
+  const [quoteResponse, setQuoteResponse] = useState<GetSwapQuoteResponse | null>(null); // Adjust the type as needed
   const [isSwapping, setIsSwapping] = useState<boolean>(false);
   const [selectedSwarm, setSelectedSwarm] = useState<Swarm | null>(null);
   const [swarms, setSwarms] = useState<Swarm[]>([]);
@@ -133,7 +134,7 @@ const Swap: React.FC<Props> = ({
       addToolResult({
         toolCallId,
         result: {
-          message: `Swap failed: ${error.message || "unknown"}`,
+          message: `Swap failed: ${(error as Error).message || "unknown"}`,
         },
       });
     } finally {
