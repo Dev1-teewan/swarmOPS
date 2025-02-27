@@ -38,9 +38,9 @@ const ChatInput: React.FC<ChatInputProps> = ({
       <button
         onClick={() => handleSendMessage()}
         disabled={disableMessage.length > 0 || status !== "ready"}
-        className=" text-[#ddf813] p-3 rounded-lg hover:bg-zinc-700 transition-colors flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-50"
+        className="text-[#ddf813] p-3 rounded-lg hover:bg-zinc-700 transition-colors flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-50 border border-[#ddf813]/80"
       >
-        <Send size={20} />
+        <Send size={20} color="#ddf813" />
       </button>
     </div>
   );

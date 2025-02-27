@@ -68,7 +68,7 @@ const TokenInput: React.FC<Props> = ({
             onChange={(e) => onChange && onChange(e.target.value)}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            className={`w-full bg-transparent border-none outline-none text-right text-lg ${
+            className={`w-full bg-transparent border-none outline-none text-right text-lg font-bold ${
               balance && !isValid ? "text-red-500" : "dark:text-white text-black"
             }`}
             disabled={!onChange}

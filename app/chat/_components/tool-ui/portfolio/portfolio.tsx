@@ -13,6 +13,8 @@ import { Swarm } from "@/app/api/swarms/route";
 import Decimal from "decimal.js";
 import { getNameFromStrategyId } from "../swarm/create-swarm";
 import Image from "next/image";
+import { getMoralis } from "@/services/moralis/client";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   addToolResult: (result: {
@@ -24,17 +26,32 @@ interface Props {
   setResponseLoading: (loading: boolean) => void;
 }
 
+const WETH_ADDRESS = "0x4200000000000000000000000000000000000006"
+
 const SwarmPortfolioView: React.FC<Props> = ({
   addToolResult,
   toolCallId,
   onCancel,
   setResponseLoading,
-})  => {
+}) => {
   const [selectedSwarm, setSelectedSwarm] = useState<Swarm | null>(null);
   const [swarms, setSwarms] = useState<Swarm[]>([]);
 
   const [combinedPortfolio, setCombinedPortfolio] =
     useState<ICombinedPortfolio | null>();
+    const [tokenPrices, setTokenPrices] = useState<
+      Record<string, { usdPriceFormatted: string; percentChange: string }>
+    >({});
+
+  // Doing this, the Portfolio UI disappears and just show No Response Required
+  // useEffect(() => {
+  //   addToolResult({
+  //     toolCallId,
+  //     result: {
+  //       message: 'No response required'
+  //     },
+  //   })
+  // })
 
   useEffect(() => {
     const fetchSwarms = async () => {
@@ -81,23 +98,62 @@ const SwarmPortfolioView: React.FC<Props> = ({
     fetchSwarmPortfolio();
   }, [selectedSwarm]);
 
+  useEffect(() => {
+    const getTokenPrices = async () => {
+      if (!combinedPortfolio?.holdings.length) return;
+      try {
+        const moralis = await getMoralis();
+        const tokenAddress = combinedPortfolio.holdings.map((token) => {
+          return {
+            tokenAddress: token.symbol.toLowerCase() === "eth" ? WETH_ADDRESS : token.address
+          }
+        });
+        const tokenPricesResult = await moralis.EvmApi.token.getMultipleTokenPrices({
+          chain: "0x2105", // base
+          include: "percent_change",
+        }, {
+          tokens: [...tokenAddress]
+        });
+        console.log({tokenPricesResult})
+
+        const tokenPricesJson = tokenPricesResult.toJSON();
+        const newTokenPrices: Record<string, { usdPriceFormatted: string; percentChange: string }> = {};
+        tokenPricesJson.map((t) => {
+          const symbol = t.tokenSymbol === 'WETH' ? 'eth' : t.tokenSymbol // This is a hack!
+          newTokenPrices[symbol!.toUpperCase()] = {
+            usdPriceFormatted: t.usdPriceFormatted ? parseFloat(t.usdPriceFormatted).toFixed(2) : 'N/A',
+            percentChange: t['24hrPercentChange'] ? parseFloat(t['24hrPercentChange']).toFixed(2) : 'N/A',
+          }
+        });
+
+        setTokenPrices(newTokenPrices);
+
+      } catch (error) {
+        console.error("Failed to fetch token prices:", error);
+      }
+    };
+
+    getTokenPrices();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [combinedPortfolio]);
+
   return (
-    <div className="flex flex-col h-full bg-zinc-900 text-white rounded-lg border border-[#ddf813] p-2 gap-2">
+    <div className="flex flex-col bg-zinc-900 text-white rounded-lg border border-[#ddf813] p-2 gap-2 mt-4 mb-4">
       {/* Swarm Selection*/}
       <div className="p-4">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-center gap-4">
           {/* Total Balance */}
-          <h1 className="text-3xl lg:text-4xl font-bold text-left justify-start">
+          <h1 className="text-3xl lg:text-2xl font-bold text-left flex-grow truncate">
             ${combinedPortfolio?.portfolioBalanceInUsd}
           </h1>
 
           {/* Dropdown & Settings */}
-          <div className="justify-end flex flex-row sm:flex-row items-center justify-between sm:justify-start gap-2 sm:gap-4 w-full sm:w-auto">
+          <div className="flex flex-row items-center gap-2 ml-auto">
             {/* Swarm Dropdown */}
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>
-                <button className="flex items-center px-4 py-2 text-sm font-medium text-zinc-200 bg-zinc-800 rounded-lg hover:bg-zinc-700 transition-colors">
+                <button className="flex items-center px-4 py-2 text-sm font-medium text-[#ddf813] bg-zinc-800 rounded-lg hover:bg-zinc-700 transition-colors">
                   <span className="mr-2 text-sm">
                     {selectedSwarm?.name ?? "Select Swarm"}
                   </span>
@@ -189,11 +245,11 @@ const SwarmPortfolioView: React.FC<Props> = ({
 
         {/* Tab Navigation */}
         <div className="border border-zinc-700 rounded-lg">
-          <div className="grid grid-cols-2 gap-4 p-1">
-            <button className="py-1 text-center text-zinc-200 glass-panel bg-zinc-800 rounded-lg">
+          <div className="grid grid-cols-2 gap-2 p-1">
+            <button className="py-1 text-center text-zinc-200 glass-panel bg-zinc-800 rounded-lg text-xs">
               Portfolio
             </button>
-            <button className="py-1 text-center text-zinc-400 glass-panel hover:bg-zinc-800 rounded-lg">
+            <button className="py-1 text-center text-zinc-400 glass-panel hover:bg-zinc-800 rounded-lg text-xs">
               Activity (Coming soon)
             </button>
           </div>
@@ -202,13 +258,13 @@ const SwarmPortfolioView: React.FC<Props> = ({
 
       {/* Assets Table */}
       <div className="flex-1 px-4 mb-3 overflow-auto">
-        <table className="w-full border-collapse">
+        <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="border-b border-zinc-700">
-              <th className="text-left p-3 font-medium text-white">Asset</th>
-              <th className="text-left p-3 font-medium text-white">Amount</th>
-              <th className="text-left p-3 font-medium text-white">Price</th>
-              <th className="text-left p-3 font-medium text-white">
+              <th className="text-left p-2 font-medium text-white">Asset</th>
+              <th className="text-left p-2 font-medium text-white">Amount</th>
+              <th className="text-left p-2 font-medium text-white">Price (24hr Change)</th>
+              <th className="text-left p-2 font-medium text-white">
                 Value (USD)
               </th>
             </tr>
@@ -221,7 +277,7 @@ const SwarmPortfolioView: React.FC<Props> = ({
                   className="border-b border-zinc-800 hover:bg-zinc-800"
                 >
                   {/* Asset with Image */}
-                  <td className="p-3">
+                  <td className="p-2">
                     <div className="flex items-center">
                       <Image
                         src={token.image}
@@ -240,30 +296,35 @@ const SwarmPortfolioView: React.FC<Props> = ({
                   </td>
 
                   {/* Amount */}
-                  <td className="p-3 text-zinc-200">
+                  <td className="p-2 text-zinc-200">
                     {new Decimal(token.cryptoBalance)
                       .div(new Decimal(10).pow(token.decimals))
                       .toFixed(10)}
                   </td>
 
                   {/* Price */}
-                  <td className="p-3 text-[#ddf813]">
-                    $
-                    {(
-                      parseFloat(token.fiatBalance) /
-                      parseFloat(token.cryptoBalance)
-                    ).toFixed(2)}
+                  <td className="p-2 text-zinc-20">
+                    ${tokenPrices[token.symbol]?.usdPriceFormatted || "N/A"}
+                    <span
+                      className={`ml-2 text-xs px-1 rounded ${
+                        parseFloat(tokenPrices[token.symbol]?.percentChange) > 0
+                          ? "text-green-500 bg-zinc-800"
+                          : "text-red-500 bg-zinc-800"
+                      }`}
+                    >
+                      ({tokenPrices[token.symbol]?.percentChange || "N/A"}%)
+                    </span>
                   </td>
 
                   {/* USD Value */}
-                  <td className="p-3 text-zinc-200">
+                  <td className="p-2 text-zinc-200">
                     ${parseFloat(token.fiatBalance).toFixed(2)}
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={4} className="p-3 text-center text-zinc-500">
+                <td colSpan={4} className="p-2 text-center text-zinc-500">
                   No assets available
                 </td>
               </tr>
@@ -273,6 +334,6 @@ const SwarmPortfolioView: React.FC<Props> = ({
       </div>
     </div>
   );
-}
+};
 
-export default SwarmPortfolioView
+export default SwarmPortfolioView;

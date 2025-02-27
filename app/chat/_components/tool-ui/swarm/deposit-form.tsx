@@ -253,8 +253,9 @@ export function DepositForm({
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   return (
-    <div className="space-y-6 mt-4 text-sm">
+    <div className="mt-4 text-sm">
       {contextHolder}
+      {/* Deposit */}
       <div className="space-y-2">
         <Label className="text-base flex items-center gap-1">
           Deposit Amount
@@ -292,8 +293,9 @@ export function DepositForm({
           <p className="text-xs text-gray-500">Balance: {ownedEth}</p>
         )}
       </div>
-
-      <div className="space-y-4">
+      
+      {/* Wallet Allocation */}
+      <div className="space-y-4 mt-4 mb-4">
         <div className="flex justify-between items-center">
           <Label className="text-base">Wallet Allocations</Label>
           <div className="flex gap-2">
@@ -383,52 +385,55 @@ export function DepositForm({
           </table>
         </div>
       </div>
-      <Button
-        onClick={() => {
-          if (
-            !formData.name ||
-            !formData.strategy ||
-            !formData.riskLevel ||
-            !formData.privacyLevel
-          ) {
-            messageApi.error("Please fill in all required fields");
-            return;
-          }
-          const combinedData = {
-            swarm: formData,
-            deposit: {
-              amount: state.depositAmount,
-              wallets: state.wallets.map(({ amount, percentage }) => ({
-                amount,
-                percentage,
-              })),
-            },
-          };
-          onSubmit(combinedData);
-          dispatch({ type: "RESET_FORM" });
-          setIsSubmitted(true);
-        }}
-        disabled={isSubmitted || parseFloat(state.inputValue) > ownedEth}
-        className={`w-full ${
-          isSubmitted ||
-          !state.depositAmount ||
-          state.depositAmount <= 0 ||
-          parseFloat(state.inputValue) > ownedEth
-            ? "bg-zinc-700 text-zinc-400"
-            : "bg-zinc-800 hover:bg-zinc-700 text-[#ddf813] border-[#ddf813]/20"
-        }`}
-      >
-        {isSubmitted ? "Confirmed" : "Confirm Deposit"}
-      </Button>
-      <Button
-        onClick={() => {
-          handleCancel();
-          dispatch({ type: "RESET_FORM" });
-        }}
-        className={`w-full bg-zinc-700 text-zinc-400`}
-      >
-        Cancel
-      </Button>
+      <div className="flex flex-col gap-2">
+        <Button
+          onClick={() => {
+            if (
+              !formData.name ||
+              !formData.strategy ||
+              !formData.riskLevel ||
+              !formData.privacyLevel
+            ) {
+              messageApi.error("Please fill in all required fields");
+              return;
+            }
+            const combinedData = {
+              swarm: formData,
+              deposit: {
+                amount: state.depositAmount,
+                wallets: state.wallets.map(({ amount, percentage }) => ({
+                  amount,
+                  percentage,
+                })),
+              },
+            };
+            onSubmit(combinedData);
+            dispatch({ type: "RESET_FORM" });
+            setIsSubmitted(true);
+          }}
+          variant="default"
+          disabled={isSubmitted || parseFloat(state.inputValue) > ownedEth}
+          className={`w-full ${
+            isSubmitted ||
+            !state.depositAmount ||
+            state.depositAmount <= 0 ||
+            parseFloat(state.inputValue) > ownedEth
+              ? "bg-[#ddf813] text-zinc-900 hover:bg-[#b8cf06]"
+              : "bg-zinc-800 hover:bg-zinc-700 text-[#ddf813] border-[#ddf813]/20"
+          }`}
+        >
+          {isSubmitted ? "Confirmed" : "Confirm Deposit"}
+        </Button>
+        <Button
+          onClick={() => {
+            handleCancel();
+            dispatch({ type: "RESET_FORM" });
+          }}
+          variant="ghost" className="w-full"
+        >
+          Cancel
+        </Button>
+      </div>
     </div>
   );
 }

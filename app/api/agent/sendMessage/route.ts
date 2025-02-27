@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
       model: anthropic("claude-3-5-sonnet-latest"),
       tools: cdpTools(agentkit),
       messages: messages,
-      system: `You should not reiterate the output of the tool nor say which input and tools are used as it is shown in the user interface, Unless explicitly stated. `,
+      system: `You should not mention tools used / any args used for tools / what interface will you be showing`,
     });
 
     const response = streamTextResult.toDataStreamResponse({

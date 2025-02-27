@@ -1,5 +1,6 @@
 import type { Message } from "ai";
 import { ToolUI } from "./tool-ui";
+import { PORTFOLIO_NAME } from "@/ai-swarm/action-names";
 
 interface MessageProps {
   key: number;
@@ -17,13 +18,22 @@ export function Message({ msg }: MessageProps) {
         className={`p-3 rounded-lg max-w-[80%] ${
           msg.role === "user" ? "bg-[#ddf813] text-zinc-900" : ""
         }`}
-        style={{ whiteSpace: "pre-wrap" }}
       >
         {msg.parts?.map((part, index) => {
           if (part.type === "text") {
             return <div key={index}>{part.text}</div>;
-          } else if (part.type === "tool-invocation") {
+          } 
+          
+          if (part.type === "tool-invocation") {
             const invocation = part.toolInvocation;
+            // special case for portfolio view - always show
+            if (invocation.toolName === PORTFOLIO_NAME) {
+              return <ToolUI
+                key={invocation.toolCallId}
+                toolCallId={invocation.toolCallId}
+                tool={invocation.toolName}
+              />
+            }
             return invocation.state !== "result" ? (
               <ToolUI
                 key={invocation.toolCallId}
@@ -31,9 +41,11 @@ export function Message({ msg }: MessageProps) {
                 tool={invocation.toolName}
               />
             ) : (
-              <div key={invocation.toolCallId}>
-                {invocation.result.message}
-              </div>
+              <div
+                key={invocation.toolCallId}
+                className="whitespace-pre-wrap"
+                dangerouslySetInnerHTML={{ __html: invocation.result.message }}
+              />
             );
           }
           return null;

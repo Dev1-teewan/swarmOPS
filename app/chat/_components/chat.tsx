@@ -5,7 +5,7 @@ import EmptyState from "./empty-state";
 import { useChatStore } from "@/app/_store/useChatStore";
 import { useEffect, useRef } from "react";
 import { useChat } from "@ai-sdk/react";
-import { CREATE_SWARM_NAME, SWAP_NAME } from "@/ai-swarm/action-names";
+import { CREATE_SWARM_NAME, PORTFOLIO_NAME, SWAP_NAME } from "@/ai-swarm/action-names";
 
 export function Chat() {
   // const params = useParams();
@@ -61,6 +61,7 @@ export function Chat() {
       return;
     }
     const lastMessage = AIMessages[AIMessages.length - 1];
+    console.log({lastMessage})
     const message = lastMessage.parts
       .filter((part) => part.type === "tool-invocation")
       .map((toolInvocation) => {

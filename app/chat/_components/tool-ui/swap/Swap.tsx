@@ -19,6 +19,7 @@ import { usePrivy } from "@privy-io/react-auth";
 import { getQuote } from "@/services/coinbase-onchainkit/quote";
 import { getPortfolio } from "@/services/coinbase-onchainkit/portfolio";
 import { getMoralis } from "@/services/moralis/client";
+import { SwapTransactionResult } from "@/app/api/swap/route";
 
 interface Props {
   initialInputToken: Token | null;
@@ -33,7 +34,6 @@ interface Props {
     result: { message: string };
   }) => void;
   toolCallId: string;
-  onCancel?: () => void;
   setResponseLoading: (loading: boolean) => void;
 }
 
@@ -49,7 +49,6 @@ const Swap: React.FC<Props> = ({
   swappingText,
   addToolResult,
   toolCallId,
-  onCancel,
   setResponseLoading,
 }) => {
   const [inputAmount, setInputAmount] = useState<string>(
@@ -74,6 +73,14 @@ const Swap: React.FC<Props> = ({
 
   const { getAccessToken } = usePrivy();
 
+  const onCancel = () => {
+    addToolResult({
+      toolCallId,
+      result: {
+        message: "Swap cancelled",
+      },
+    });
+  }
   const onChangeInputOutput = () => {
     const tempInputToken = inputToken;
     const tempInputAmount = inputAmount;
@@ -106,13 +113,13 @@ const Swap: React.FC<Props> = ({
         throw new Error(errorResponse.error || "Unknown error");
       }
 
-      const swapTransactionResult = await swapResults.json();
+      const swapTransactionResult = await swapResults.json() as SwapTransactionResult[]
 
       const resultMessage =
-        `Swaps created successfully. ${inputAmount} ${inputToken?.symbol} to ${outputToken?.symbol}.\n` +
+        `Swaps created successfully. ${inputAmount} ${inputToken?.symbol} to ${outputToken?.symbol}.<br/>` +
         swapTransactionResult
-          .map((tx: any) => `  • ${tx.transactionHash}`)
-          .join("\n");
+          .map((tx: SwapTransactionResult) => `• <a href="${tx.transactionLink}" target="_blank">${tx.transactionHash}</a>`)
+          .join("<br/>");
       setResponseLoading(true);
       addToolResult({
         toolCallId,
@@ -146,7 +153,7 @@ const Swap: React.FC<Props> = ({
             setOutputAmount(
               new Decimal(quote.toAmount)
                 .div(new Decimal(10).pow(outputToken.decimals))
-                .toFixed(outputToken.decimals)
+                .toFixed(9)
             );
           } else {
             setOutputAmount("");
@@ -242,6 +249,7 @@ const Swap: React.FC<Props> = ({
         const data = await response.json();
         console.log("Fetched swarms:", data);
         setSwarms(data);
+        setSelectedSwarm(data[0])
       } catch (error) {
         console.error("Failed to fetch swarms:", error);
       }
@@ -278,7 +286,7 @@ const Swap: React.FC<Props> = ({
             formatBalance(
               totalBalance
                 .div(new Decimal(10).pow(inputToken.decimals))
-                .toFixed(inputToken.decimals),
+                .toFixed(6, Decimal.ROUND_DOWN),
               inputToken.decimals
             )
           );
@@ -302,7 +310,7 @@ const Swap: React.FC<Props> = ({
   }, [inputAmount, inputTokenBalance]);
 
   return (
-    <div className="flex flex-col gap-2 p-4 border border-[#ddf813] rounded-lg">
+    <div className="flex flex-col gap-2 p-4 border border-[#ddf813] rounded-lg mt-4 mb-4">
         {!swarms || swarms.length === 0 ? (
           <span className="text-sm font-bold pl-1 text-white flex items-center">
             <AlertTriangle className="h-4 w-4" /> No swarms created yet

@@ -293,7 +293,7 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
   return (
     <>
       {contextHolder}
-      <div className="bg-zinc-900 text-white rounded-lg border border-[#ddf813] p-6 max-w-4xl mt-2">
+      <div className="bg-zinc-900 text-white rounded-lg border border-[#ddf813] p-6 max-w-4xl mt-4 mb-4">
         <form className="space-y-6">
           <div className="space-y-2">
             <Label className="text-base">Swarm Name</Label>

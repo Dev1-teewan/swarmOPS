@@ -90,7 +90,7 @@ const TokenSelect: React.FC<Props> = ({ value, onChange }) => {
           ) : (
             <div className="w-6 h-6 rounded-full bg-neutral-50 dark:bg-neutral-400" />
           )}
-          <p className="text-xs font-bold text-black dark:text-white">
+          <p className="text-s font-bold text-black dark:text-white">
             {value ? value.symbol : "Select"}
           </p>
           <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50 text-white" />

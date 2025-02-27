@@ -35,7 +35,6 @@ export const ToolUI = ({ toolCallId, tool }: ToolUIProps) => {
           swappingText="Swapping..."
           addToolResult={addToolResult}
           toolCallId={toolCallId}
-          onCancel={() => console.log("Swap cancelled")}
           setResponseLoading={setResponseLoading}
         />
       );
@@ -44,7 +43,10 @@ export const ToolUI = ({ toolCallId, tool }: ToolUIProps) => {
         <SwarmPortfolioView
           addToolResult={addToolResult}
           toolCallId={toolCallId}
-          onCancel={() => console.log("Swap cancelled")}
+          onCancel={() => addToolResult({
+            toolCallId,
+            result: {},
+          })}
           setResponseLoading={setResponseLoading}
         />
       )
