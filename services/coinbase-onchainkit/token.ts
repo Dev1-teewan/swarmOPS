@@ -25,7 +25,6 @@ export const searchTokens = async ({
   setOnchainKitConfig();
 
   const tokensResponse = await getTokens({ limit: limit, search: search });
-
   if ((tokensResponse as APIError).error) {
     throw new Error((tokensResponse as APIError).error);
   }

@@ -17,6 +17,7 @@ import {
   TooltipTrigger,
   TooltipProvider,
 } from "@radix-ui/react-tooltip";
+import { searchTokens } from "@/services/coinbase-onchainkit/token";
 
 interface Props {
   value: Token | null;
@@ -52,27 +53,38 @@ const defaultTokens: Token[] = [
 const TokenSelect: React.FC<Props> = ({ value, onChange }) => {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
-  const [tokens, setTokens] = useState<Token[]>([]);
+  const [tokens, setTokens] = useState<Token[]>(defaultTokens);
   const [loading, setLoading] = useState(false);
 
+  
   useEffect(() => {
-    if (input.length > 0) {
-      setLoading(true);
-      fetch(`/api/tokens/search?keyword=${input}`)
-        .then((res) => res.json())
-        .then((data) => {
-          console.log("API response:", data); // Debugging statement
-          setTokens(data);
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching tokens:", error); // Debugging statement
-          setTokens([]);
-          setLoading(false);
-        });
-    } else {
-      setTokens(defaultTokens);
+
+    const searchTokensData = async () => {
+      if (input.length > 0) {
+        setLoading(true);
+        const tokens = await searchTokens({ limit: '10', search: input })
+        console.log(tokens)
+        setTokens(tokens)
+        setLoading(false);
+      } else {
+        setTokens(defaultTokens);
+        setLoading(false);
+      }
     }
+
+      // Use coinbase sdk instead
+      // fetch(`/api/tokens/search?keyword=${input}`)
+      //   .then((res) => res.json())
+      //   .then((data) => {
+      //     console.log("API response:", data); // Debugging statement
+      //     setTokens(data);
+      //     setLoading(false);
+      //   })
+      //   .catch((error) => {
+      //     console.error("Error fetching tokens:", error); // Debugging statement
+      //     setTokens([]);
+      //     setLoading(false);
+      searchTokensData()
   }, [input]);
 
   return (

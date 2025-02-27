@@ -9,7 +9,7 @@ export interface Swarm {
   name: string;
   owner_wallet: string;
   strategy: string;
-  risk: string;
+  privacy: string;
   sub_wallets: Array<{ public_key: string }>;
 }
 
@@ -26,8 +26,6 @@ export async function POST(request: NextRequest) {
   try {
     const user = await verifyTokenAndGetPrivyUser(request);
 
-    console.log({ user });
-    console.log(user.wallet);
     const ownerWallet = user.wallet?.address;
     console.log("user info", ownerWallet);
 
@@ -74,7 +72,7 @@ export async function GET(request: NextRequest) {
         id,
         owner_wallet,
         name,
-        risk,
+        privacy,
         strategy,
         sub_wallets (public_key)
       `

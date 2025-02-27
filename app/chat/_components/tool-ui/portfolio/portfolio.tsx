@@ -88,8 +88,6 @@ const SwarmPortfolioView: React.FC<Props> = ({
         );
         const combinedPortfolio = await getCombinedPortfolio(publicKeys);
         setCombinedPortfolio(combinedPortfolio);
-        console.log({ combinedPortfolio });
-        //if swarm not empty (?)
       } catch (error) {
         console.error("Failed to fetch swarms:", error);
       }
@@ -114,7 +112,6 @@ const SwarmPortfolioView: React.FC<Props> = ({
         }, {
           tokens: [...tokenAddress]
         });
-        console.log({tokenPricesResult})
 
         const tokenPricesJson = tokenPricesResult.toJSON();
         const newTokenPrices: Record<string, { usdPriceFormatted: string; percentChange: string }> = {};
@@ -223,7 +220,7 @@ const SwarmPortfolioView: React.FC<Props> = ({
           <div className="grid grid-flow-row sm:grid-flow-col auto-cols-auto border border-zinc-700 rounded-lg px-4">
             {[
               { label: "Strategy", value: getNameFromStrategyId(selectedSwarm?.strategy) },
-              { label: "Risk", value: selectedSwarm?.risk },
+              { label: "Privacy", value: selectedSwarm?.privacy },
               {
                 label: "Wallets",
                 value: selectedSwarm?.sub_wallets.length,

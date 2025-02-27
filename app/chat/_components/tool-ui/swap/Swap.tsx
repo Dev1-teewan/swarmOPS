@@ -118,7 +118,7 @@ const Swap: React.FC<Props> = ({
       const resultMessage =
         `Swaps created successfully. ${inputAmount} ${inputToken?.symbol} to ${outputToken?.symbol}.<br/>` +
         swapTransactionResult
-          .map((tx: SwapTransactionResult) => `• <a href="${tx.transactionLink}" target="_blank">${tx.transactionHash}</a>`)
+          .map((tx: SwapTransactionResult) => `&nbsp;&nbsp;•&nbsp;<a href="${tx.transactionLink}" target="_blank">${tx.transactionHash}</a>`)
           .join("<br/>");
       setResponseLoading(true);
       addToolResult({
