@@ -48,6 +48,7 @@ export const getCombinedPortfolio = async (addresses: `0x${string}`[]): Promise<
 
 
 export const combinePortfolios = (portfolios: CoinbasePortfolio[]): ICombinedPortfolio => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const combinedHoldings: { [symbol: string]: any } = {};
   let totalPortfolioBalanceInUsd = 0;
 
@@ -57,8 +58,8 @@ export const combinePortfolios = (portfolios: CoinbasePortfolio[]): ICombinedPor
       if (!combinedHoldings[token.symbol]) {
         combinedHoldings[token.symbol] = { ...token };
       } else {
-        combinedHoldings[token.symbol].cryptoBalance = (parseFloat(combinedHoldings[token.symbol].cryptoBalance) + parseFloat(token.cryptoBalance)).toString();
-        combinedHoldings[token.symbol].fiatBalance = (parseFloat(combinedHoldings[token.symbol].fiatBalance) + parseFloat(token.fiatBalance)).toString();
+        combinedHoldings[token.symbol].cryptoBalance = (parseFloat(combinedHoldings[token.symbol].cryptoBalance) + parseFloat(token.cryptoBalance.toString())).toString();
+        combinedHoldings[token.symbol].fiatBalance = (parseFloat(combinedHoldings[token.symbol].fiatBalance) + parseFloat(token.fiatBalance.toString())).toString();
       }
     });
   });

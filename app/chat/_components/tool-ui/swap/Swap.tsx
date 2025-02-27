@@ -257,6 +257,7 @@ const Swap: React.FC<Props> = ({
     };
 
     fetchSwarms();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const formatBalance = (balance: string, decimals: number) => {

@@ -26,7 +26,7 @@ interface Props {
   setResponseLoading: (loading: boolean) => void;
 }
 
-const WETH_ADDRESS = "0x4200000000000000000000000000000000000006"
+const WETH_ADDRESS = "0x4200000000000000000000000000000000000006";
 
 const SwarmPortfolioView: React.FC<Props> = ({
   addToolResult,
@@ -39,9 +39,9 @@ const SwarmPortfolioView: React.FC<Props> = ({
 
   const [combinedPortfolio, setCombinedPortfolio] =
     useState<ICombinedPortfolio | null>();
-    const [tokenPrices, setTokenPrices] = useState<
-      Record<string, { usdPriceFormatted: string; percentChange: string }>
-    >({});
+  const [tokenPrices, setTokenPrices] = useState<
+    Record<string, { usdPriceFormatted: string; percentChange: string }>
+  >({});
 
   // Doing this, the Portfolio UI disappears and just show No Response Required
   // useEffect(() => {
@@ -103,35 +103,47 @@ const SwarmPortfolioView: React.FC<Props> = ({
         const moralis = await getMoralis();
         const tokenAddress = combinedPortfolio.holdings.map((token) => {
           return {
-            tokenAddress: token.symbol.toLowerCase() === "eth" ? WETH_ADDRESS : token.address
-          }
+            tokenAddress:
+              token.symbol.toLowerCase() === "eth"
+                ? WETH_ADDRESS
+                : token.address,
+          };
         });
-        const tokenPricesResult = await moralis.EvmApi.token.getMultipleTokenPrices({
-          chain: "0x2105", // base
-          include: "percent_change",
-        }, {
-          tokens: [...tokenAddress]
-        });
+        const tokenPricesResult =
+          await moralis.EvmApi.token.getMultipleTokenPrices(
+            {
+              chain: "0x2105", // base
+              include: "percent_change",
+            },
+            {
+              tokens: [...tokenAddress],
+            }
+          );
 
         const tokenPricesJson = tokenPricesResult.toJSON();
-        const newTokenPrices: Record<string, { usdPriceFormatted: string; percentChange: string }> = {};
+        const newTokenPrices: Record<
+          string,
+          { usdPriceFormatted: string; percentChange: string }
+        > = {};
         tokenPricesJson.map((t) => {
-          const symbol = t.tokenSymbol === 'WETH' ? 'eth' : t.tokenSymbol // This is a hack!
+          const symbol = t.tokenSymbol === "WETH" ? "eth" : t.tokenSymbol; // This is a hack!
           newTokenPrices[symbol!.toUpperCase()] = {
-            usdPriceFormatted: t.usdPriceFormatted ? parseFloat(t.usdPriceFormatted).toFixed(2) : 'N/A',
-            percentChange: t['24hrPercentChange'] ? parseFloat(t['24hrPercentChange']).toFixed(2) : 'N/A',
-          }
+            usdPriceFormatted: t.usdPriceFormatted
+              ? parseFloat(t.usdPriceFormatted).toFixed(2)
+              : "N/A",
+            percentChange: t["24hrPercentChange"]
+              ? parseFloat(t["24hrPercentChange"]).toFixed(2)
+              : "N/A",
+          };
         });
 
         setTokenPrices(newTokenPrices);
-
       } catch (error) {
         console.error("Failed to fetch token prices:", error);
       }
     };
 
     getTokenPrices();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [combinedPortfolio]);
 
   return (
@@ -219,7 +231,10 @@ const SwarmPortfolioView: React.FC<Props> = ({
         <div className="glass-panel py-4">
           <div className="grid grid-flow-row sm:grid-flow-col auto-cols-auto border border-zinc-700 rounded-lg px-4">
             {[
-              { label: "Strategy", value: getNameFromStrategyId(selectedSwarm?.strategy) },
+              {
+                label: "Strategy",
+                value: getNameFromStrategyId(selectedSwarm?.strategy),
+              },
               { label: "Privacy", value: selectedSwarm?.privacy },
               {
                 label: "Wallets",
@@ -260,14 +275,18 @@ const SwarmPortfolioView: React.FC<Props> = ({
             <tr className="border-b border-zinc-700">
               <th className="text-left p-2 font-medium text-white">Asset</th>
               <th className="text-left p-2 font-medium text-white">Amount</th>
-              <th className="text-left p-2 font-medium text-white">Price (24hr Change)</th>
+              <th className="text-left p-2 font-medium text-white">
+                Price (24hr Change)
+              </th>
               <th className="text-left p-2 font-medium text-white">
                 Value (USD)
               </th>
             </tr>
           </thead>
           <tbody>
-            {combinedPortfolio?.holdings?.length > 0 ? (
+            {combinedPortfolio &&
+            combinedPortfolio.holdings &&
+            combinedPortfolio.holdings.length > 0 ? (
               combinedPortfolio?.holdings?.map((token, index) => (
                 <tr
                   key={`${token.symbol}-${index}`}

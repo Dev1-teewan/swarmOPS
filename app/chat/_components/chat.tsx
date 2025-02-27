@@ -61,7 +61,7 @@ export function Chat() {
       return;
     }
     const lastMessage = AIMessages[AIMessages.length - 1];
-    console.log({lastMessage})
+    console.log({ lastMessage });
     const message = lastMessage.parts
       .filter((part) => part.type === "tool-invocation")
       .map((toolInvocation) => {
@@ -77,12 +77,14 @@ export function Chat() {
         }
       });
     setDisableMessage(message.join(" and ") || "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [AIMessages]);
 
   useEffect(() => {
     if (status) {
       setStatus(status);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
   return (
