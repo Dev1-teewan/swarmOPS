@@ -13,7 +13,9 @@ import {
   CoinbasePortfolio,
   getCombinedPortfolio,
   getPortfolio,
+  getWalletPortfolios,
   ICombinedPortfolio,
+  WalletPortfolio,
 } from "@/services/coinbase-onchainkit/portfolio";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useEffect, useState } from "react";
@@ -44,12 +46,20 @@ const SwarmPortfolioView: React.FC<Props> = ({
 }) => {
   const [selectedSwarm, setSelectedSwarm] = useState<Swarm | null>(null);
   const [swarms, setSwarms] = useState<Swarm[]>([]);
-  const [activeTab, setActiveTab] = useState("Swarm");
+  const [activeTab, setActiveTab] = useState("Swarm Overview");
   const [combinedPortfolio, setCombinedPortfolio] =
     useState<ICombinedPortfolio | null>();
   const [tokenPrices, setTokenPrices] = useState<
     Record<string, { usdPriceFormatted: string; percentChange: string }>
   >({});
+  const [walletPortfolios, setWalletPortfolios] = useState<WalletPortfolio[]>(
+    []
+  );
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      alert("Copied to clipboard!");
+    });
+  };
   // Doing this, the Portfolio UI disappears and just show No Response Required
   // useEffect(() => {
   //   addToolResult({
@@ -103,22 +113,21 @@ const SwarmPortfolioView: React.FC<Props> = ({
     fetchSwarmPortfolio();
   }, [selectedSwarm]);
 
-/*   useEffect(() => {
+  useEffect(() => {
     const fetchWalletPortfolios = async () => {
       if (!selectedSwarm) return;
       try {
         const publicKeys = selectedSwarm.sub_wallets.map(
           (wallet) => wallet.public_key as `0x${string}`
         );
-        const portfolios = await getPortfolio(publicKeys);
+        const portfolios = await getWalletPortfolios(publicKeys);
         setWalletPortfolios(portfolios);
       } catch (error) {
-        console.error("Failed to fetch swarms:", error);
+        console.error("Failed to fetch wallet portfolios:", error);
       }
     };
-
     fetchWalletPortfolios();
-  }, [selectedSwarm]); */
+  }, [selectedSwarm]);
 
   useEffect(() => {
     const getTokenPrices = async () => {
@@ -282,20 +291,24 @@ const SwarmPortfolioView: React.FC<Props> = ({
 
         {/* Tab Navigation */}
         <div className="border border-zinc-700 rounded-lg">
-          <div className="grid grid-cols-2 gap-2 p-1">
+          <div className="grid grid-cols-2 gap-1 p-1">
             <button
-              className={`py-1 text-center text-zinc-200 glass-panel bg-zinc-800 rounded-lg text-xs ${
-                activeTab === "Swarm Overview" ? "active-tab" : ""
+              className={`py-1 text-center text-xs rounded transition-colors duration-200 ${
+                activeTab === "Swarm Overview"
+                  ? "bg-[#ddf813] text-zinc-900"
+                  : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
               }`}
               onClick={() => setActiveTab("Swarm Overview")}
             >
               Swarm
             </button>
             <button
-              className={`py-1 text-center text-zinc-200 glass-panel bg-zinc-800 rounded-lg text-xs ${
-                activeTab === "Wallets" ? "active-tab" : ""
+              className={`py-1 text-center text-xs rounded transition-colors duration-200 ${
+                activeTab === "Wallet Overview"
+                  ? "bg-[#ddf813] text-zinc-900"
+                  : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
               }`}
-              onClick={() => setActiveTab("Wallets")}
+              onClick={() => setActiveTab("Wallet Overview")}
             >
               Wallets
             </button>
@@ -303,7 +316,7 @@ const SwarmPortfolioView: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* Assets Table */}
+      {/* Swarm Overview */}
       {activeTab === "Swarm Overview" ? (
         <div className="flex-1 px-4 mb-3 overflow-auto">
           <table className="w-full border-collapse text-sm">
@@ -384,65 +397,92 @@ const SwarmPortfolioView: React.FC<Props> = ({
           </table>
         </div>
       ) : (
-        <div>
-{/*           <div className="portfolio-table">
-            <table className="w-full border-collapse text-sm">
-              <thead>
-                <tr className="border-b border-zinc-700">
-                  <th className="text-left p-2 font-medium text-white">
-                    Wallet
-                  </th>
-                  <th className="text-left p-2 font-medium text-white">
-                    Address
-                  </th>
-                  <th className="text-left p-2 font-medium text-white">
-                    Tokens
-                  </th>
-                  <th className="text-left p-2 font-medium text-white">
-                    Value (USD)
-                  </th>
-                </tr>
-              </thead>
+        // Wallet Overview
+        <div className="flex-1 px-4 mb-3 overflow-auto">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="border-b border-zinc-700">
+                <th className="text-left p-2 font-medium text-white">
+                  Wallets
+                </th>
+                <th className="text-left p-2 font-medium text-white">
+                  Address
+                </th>
+                <th className="text-left p-2 font-medium text-white">Tokens</th>
+                <th className="text-left p-2 font-medium text-white">
+                  Value (USD)
+                </th>
+              </tr>
+            </thead>
 
-              <tbody>
-                {selectedSwarm?.sub_wallets?.map((wallet, index) => (
-                  <div
-                    key={index}
-                    className="grid grid-cols-4 border-b border-zinc-800/50"
-                  >
-                    <div className="px-4 py-3 flex items-center">
-                      <Wallet className="w-4 h-4 mr-2 text-zinc-400" />
+            <tbody>
+              {walletPortfolios.map((wallets, index) => (
+                <tr
+                  key={index}
+                  className="border-b border-zinc-800 hover:bg-zinc-800"
+                >
+                  {/* Index */}
+                  <td className="p-2">
+                    <div className="flex items-center">
                       <div className="font-medium text-zinc-200">
-                        {index + 1}
+                        Wallet {index + 1}
                       </div>
                     </div>
-                    <div className="px-4 py-3 flex items-center">
-                      <span className="address-truncate">
-                        {walletPortfolios?.portfolio?.address}
-                      </span>
-                      <button className="copy-button">
-                        <Copy className="h-4 w-4" />
-                      </button>
-                      <button className="copy-button">
-                        <ArrowUpRight className="h-4 w-4" />
-                      </button>
-                    </div>
+                  </td>
 
-                    <div className="px-4 py-3">
-                      <div className="token-icons">
-                        {walletPortfolios?.portfolio?.tokenBalances.map(
-                          (token, index) => token.image
-                        )}
-                      </div>
+                  <td className="p-2 text-zinc-200">
+                    <span className="mr-2">
+                      {wallets.address.slice(0, 4) +
+                        "..." +
+                        wallets.address.slice(-4)}
+                    </span>
+                    <button
+                      className="copy-button"
+                      onClick={() => copyToClipboard(wallets.address)}
+                    >
+                      <Copy className="h-4 w-4" />
+                    </button>
+
+                    {/* Direct to basescan*/}
+                    <button
+                      className="direct"
+                      onClick={() => window.open(`https://basescan.org/address/${wallets.address}`, "_blank")}
+                      >
+                      <ArrowUpRight className="h-4 w-4" />
+                    </button>
+                  </td>
+
+                  {/* Token Images*/}
+                  <td className="p-2">
+                    <div className="flex items-center">
+                      {wallets.tokens.map((token, index) => (
+                        <div key={index} className="relative group">
+                          <Image
+                            src={token.image}
+                            width={24}
+                            height={24}
+                            className={`rounded-full ${
+                              index > 0 ? "token-image" : ""
+                            }`}
+                            alt="wallet-token-images"
+                          />
+                          {/* Tooltip */}
+                          <span className="absolute left-1/2 -translate-x-1/2 bottom-8 px-2 py-1 text-xs text-white bg-black rounded opacity-0 group-hover:opacity-100 transition">
+                            {token.symbol}
+                          </span>
+                        </div>
+                      ))}
                     </div>
-                    <div className="px-4 py-3 text-right font-mono">
-                      {walletPortfolios?.portfolio?.portfolioBalanceInUsd}
-                    </div>
-                  </div>
-                ))}
-              </tbody>
-            </table>
-          </div> */}
+                  </td>
+
+                  {/* Wallet Balance */}
+                  <td className="p-2 text-zinc-200">
+                    ${parseFloat(wallets.portfolioBalanceInUsd).toFixed(4)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>
