@@ -14,7 +14,6 @@ import {
   getCombinedPortfolio,
   getPortfolio,
   ICombinedPortfolio,
-  Portfolio,
 } from "@/services/coinbase-onchainkit/portfolio";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useEffect, useState } from "react";
@@ -51,10 +50,6 @@ const SwarmPortfolioView: React.FC<Props> = ({
   const [tokenPrices, setTokenPrices] = useState<
     Record<string, { usdPriceFormatted: string; percentChange: string }>
   >({});
-  const [walletPortfolios, setWalletPortfolios] = useState<Record<
-    string,
-    Portfolio
-  > | null>(null);
   // Doing this, the Portfolio UI disappears and just show No Response Required
   // useEffect(() => {
   //   addToolResult({
