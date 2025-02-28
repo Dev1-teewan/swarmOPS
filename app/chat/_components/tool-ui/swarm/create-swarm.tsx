@@ -329,12 +329,12 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
                     />
                     <Label
                       htmlFor={strategy.id}
-                      className={`flex flex-col h-full p-2 rounded-lg border-2 border-[#ddf813]/20 bg-zinc-800 
+                      className={`flex flex-col h-full p-2 rounded-lg border border-[#ddf813]/20 bg-zinc-800 
                       transition-colors duration-300 cursor-pointer
                       ${
                         strategy.disabled
                           ? "opacity-50 cursor-not-allowed"
-                          : "hover:bg-zinc-700 peer-data-[state=checked]:border-[#ddf813]"
+                          : "hover:bg-zinc-700 peer-data-[state=checked]:border-[#ddf813]/80"
                       }`}
                     >
                       <div className="flex items-center gap-2 mb-1">
@@ -348,7 +348,7 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
                       </p>
                     </Label>
                     {strategy.disabled && (
-                      <div className="absolute inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center rounded-lg group-hover:flex group-hover:bg-opacity-75 hidden group-hover:block">
+                      <div className="absolute inset-0 bg-zinc-800 bg-opacity-75 flex items-center justify-center rounded-lg group-hover:flex group-hover:bg-opacity-75 hidden group-hover:block">
                         <span className="text-white text-sm font-bold">
                           Coming Soon
                         </span>
@@ -379,8 +379,8 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
                   <Label
                     htmlFor={`privacy-${level}`}
                     className="flex items-center justify-center p-1 rounded-md border border-[#ddf813]/20 bg-zinc-800
-                    over:bg-zinc-700 transition-colors duration-300
-                    peer-data-[state=checked]:border-[#ddf813] peer-data-[state=checked]:bg-zinc-700
+                    hover:bg-zinc-700 transition-colors duration-300
+                    peer-data-[state=checked]:border-[#ddf813]/80 peer-data-[state=checked]:bg-zinc-800
                     cursor-pointer capitalize text-sm"
                   >
                     {level}
