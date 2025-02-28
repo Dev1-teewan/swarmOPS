@@ -2,10 +2,19 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDown, MoreVertical } from "lucide-react";
 import {
+  ChevronDown,
+  MoreVertical,
+  Copy,
+  ArrowUpRight,
+  Wallet,
+} from "lucide-react";
+import {
+  CoinbasePortfolio,
   getCombinedPortfolio,
+  getPortfolio,
   ICombinedPortfolio,
+  Portfolio,
 } from "@/services/coinbase-onchainkit/portfolio";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useEffect, useState } from "react";
@@ -36,13 +45,16 @@ const SwarmPortfolioView: React.FC<Props> = ({
 }) => {
   const [selectedSwarm, setSelectedSwarm] = useState<Swarm | null>(null);
   const [swarms, setSwarms] = useState<Swarm[]>([]);
-
+  const [activeTab, setActiveTab] = useState("Swarm");
   const [combinedPortfolio, setCombinedPortfolio] =
     useState<ICombinedPortfolio | null>();
   const [tokenPrices, setTokenPrices] = useState<
     Record<string, { usdPriceFormatted: string; percentChange: string }>
   >({});
-
+  const [walletPortfolios, setWalletPortfolios] = useState<Record<
+    string,
+    Portfolio
+  > | null>(null);
   // Doing this, the Portfolio UI disappears and just show No Response Required
   // useEffect(() => {
   //   addToolResult({
@@ -96,6 +108,23 @@ const SwarmPortfolioView: React.FC<Props> = ({
     fetchSwarmPortfolio();
   }, [selectedSwarm]);
 
+/*   useEffect(() => {
+    const fetchWalletPortfolios = async () => {
+      if (!selectedSwarm) return;
+      try {
+        const publicKeys = selectedSwarm.sub_wallets.map(
+          (wallet) => wallet.public_key as `0x${string}`
+        );
+        const portfolios = await getPortfolio(publicKeys);
+        setWalletPortfolios(portfolios);
+      } catch (error) {
+        console.error("Failed to fetch swarms:", error);
+      }
+    };
+
+    fetchWalletPortfolios();
+  }, [selectedSwarm]); */
+
   useEffect(() => {
     const getTokenPrices = async () => {
       if (!combinedPortfolio?.holdings.length) return;
@@ -144,6 +173,7 @@ const SwarmPortfolioView: React.FC<Props> = ({
     };
 
     getTokenPrices();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [combinedPortfolio]);
 
   return (
@@ -258,96 +288,168 @@ const SwarmPortfolioView: React.FC<Props> = ({
         {/* Tab Navigation */}
         <div className="border border-zinc-700 rounded-lg">
           <div className="grid grid-cols-2 gap-2 p-1">
-            <button className="py-1 text-center text-zinc-200 glass-panel bg-zinc-800 rounded-lg text-xs">
-              Portfolio
+            <button
+              className={`py-1 text-center text-zinc-200 glass-panel bg-zinc-800 rounded-lg text-xs ${
+                activeTab === "Swarm Overview" ? "active-tab" : ""
+              }`}
+              onClick={() => setActiveTab("Swarm Overview")}
+            >
+              Swarm
             </button>
-            <button className="py-1 text-center text-zinc-400 glass-panel hover:bg-zinc-800 rounded-lg text-xs">
-              Activity (Coming soon)
+            <button
+              className={`py-1 text-center text-zinc-200 glass-panel bg-zinc-800 rounded-lg text-xs ${
+                activeTab === "Wallets" ? "active-tab" : ""
+              }`}
+              onClick={() => setActiveTab("Wallets")}
+            >
+              Wallets
             </button>
           </div>
         </div>
       </div>
 
       {/* Assets Table */}
-      <div className="flex-1 px-4 mb-3 overflow-auto">
-        <table className="w-full border-collapse text-sm">
-          <thead>
-            <tr className="border-b border-zinc-700">
-              <th className="text-left p-2 font-medium text-white">Asset</th>
-              <th className="text-left p-2 font-medium text-white">Amount</th>
-              <th className="text-left p-2 font-medium text-white">
-                Price (24hr Change)
-              </th>
-              <th className="text-left p-2 font-medium text-white">
-                Value (USD)
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {combinedPortfolio &&
-            combinedPortfolio.holdings &&
-            combinedPortfolio.holdings.length > 0 ? (
-              combinedPortfolio?.holdings?.map((token, index) => (
-                <tr
-                  key={`${token.symbol}-${index}`}
-                  className="border-b border-zinc-800 hover:bg-zinc-800"
-                >
-                  {/* Asset with Image */}
-                  <td className="p-2">
-                    <div className="flex items-center">
-                      <Image
-                        src={token.image}
-                        alt={token.symbol}
-                        width={24}
-                        height={24}
-                        className="rounded-full mr-2"
-                      />
-                      <div>
-                        <div className="text-zinc-100">{token.symbol}</div>
-                        <div className="text-xs text-zinc-500">
-                          {token.name}
+      {activeTab === "Swarm Overview" ? (
+        <div className="flex-1 px-4 mb-3 overflow-auto">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="border-b border-zinc-700">
+                <th className="text-left p-2 font-medium text-white">Asset</th>
+                <th className="text-left p-2 font-medium text-white">Amount</th>
+                <th className="text-left p-2 font-medium text-white">
+                  Price (24hr Change)
+                </th>
+                <th className="text-left p-2 font-medium text-white">
+                  Value (USD)
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {combinedPortfolio?.holdings?.length > 0 ? (
+                combinedPortfolio?.holdings?.map((token, index) => (
+                  <tr
+                    key={`${token.symbol}-${index}`}
+                    className="border-b border-zinc-800 hover:bg-zinc-800"
+                  >
+                    {/* Asset with Image */}
+                    <td className="p-2">
+                      <div className="flex items-center">
+                        <Image
+                          src={token.image}
+                          alt={token.symbol}
+                          width={24}
+                          height={24}
+                          className="rounded-full mr-2"
+                        />
+                        <div>
+                          <div className="text-zinc-100">{token.symbol}</div>
+                          <div className="text-xs text-zinc-500">
+                            {token.name}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </td>
+                    </td>
 
-                  {/* Amount */}
-                  <td className="p-2 text-zinc-200">
-                    {new Decimal(token.cryptoBalance)
-                      .div(new Decimal(10).pow(token.decimals))
-                      .toFixed(10)}
-                  </td>
+                    {/* Amount */}
+                    <td className="p-2 text-zinc-200">
+                      {new Decimal(token.cryptoBalance)
+                        .div(new Decimal(10).pow(token.decimals))
+                        .toFixed(10)}
+                    </td>
 
-                  {/* Price */}
-                  <td className="p-2 text-zinc-20">
-                    ${tokenPrices[token.symbol]?.usdPriceFormatted || "N/A"}
-                    <span
-                      className={`ml-2 text-xs px-1 rounded ${
-                        parseFloat(tokenPrices[token.symbol]?.percentChange) > 0
-                          ? "text-green-500 bg-zinc-800"
-                          : "text-red-500 bg-zinc-800"
-                      }`}
-                    >
-                      ({tokenPrices[token.symbol]?.percentChange || "N/A"}%)
-                    </span>
-                  </td>
+                    {/* Price */}
+                    <td className="p-2 text-zinc-20">
+                      ${tokenPrices[token.symbol]?.usdPriceFormatted || "N/A"}
+                      <span
+                        className={`ml-2 text-xs px-1 rounded ${
+                          parseFloat(tokenPrices[token.symbol]?.percentChange) >
+                          0
+                            ? "text-green-500 bg-zinc-800"
+                            : "text-red-500 bg-zinc-800"
+                        }`}
+                      >
+                        ({tokenPrices[token.symbol]?.percentChange || "N/A"}%)
+                      </span>
+                    </td>
 
-                  {/* USD Value */}
-                  <td className="p-2 text-zinc-200">
-                    ${parseFloat(token.fiatBalance).toFixed(2)}
+                    {/* USD Value */}
+                    <td className="p-2 text-zinc-200">
+                      ${parseFloat(token.fiatBalance).toFixed(2)}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={4} className="p-2 text-center text-zinc-500">
+                    No assets available
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={4} className="p-2 text-center text-zinc-500">
-                  No assets available
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+              )}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div>
+{/*           <div className="portfolio-table">
+            <table className="w-full border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-zinc-700">
+                  <th className="text-left p-2 font-medium text-white">
+                    Wallet
+                  </th>
+                  <th className="text-left p-2 font-medium text-white">
+                    Address
+                  </th>
+                  <th className="text-left p-2 font-medium text-white">
+                    Tokens
+                  </th>
+                  <th className="text-left p-2 font-medium text-white">
+                    Value (USD)
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {selectedSwarm?.sub_wallets?.map((wallet, index) => (
+                  <div
+                    key={index}
+                    className="grid grid-cols-4 border-b border-zinc-800/50"
+                  >
+                    <div className="px-4 py-3 flex items-center">
+                      <Wallet className="w-4 h-4 mr-2 text-zinc-400" />
+                      <div className="font-medium text-zinc-200">
+                        {index + 1}
+                      </div>
+                    </div>
+                    <div className="px-4 py-3 flex items-center">
+                      <span className="address-truncate">
+                        {walletPortfolios?.portfolio?.address}
+                      </span>
+                      <button className="copy-button">
+                        <Copy className="h-4 w-4" />
+                      </button>
+                      <button className="copy-button">
+                        <ArrowUpRight className="h-4 w-4" />
+                      </button>
+                    </div>
+
+                    <div className="px-4 py-3">
+                      <div className="token-icons">
+                        {walletPortfolios?.portfolio?.tokenBalances.map(
+                          (token, index) => token.image
+                        )}
+                      </div>
+                    </div>
+                    <div className="px-4 py-3 text-right font-mono">
+                      {walletPortfolios?.portfolio?.portfolioBalanceInUsd}
+                    </div>
+                  </div>
+                ))}
+              </tbody>
+            </table>
+          </div> */}
+        </div>
+      )}
     </div>
   );
 };
