@@ -79,7 +79,6 @@ const FundCardContainer: React.FC<FundCardContainerProps> = ({
   addToolResult,
   toolCallId,
 }) => {
-  // const [isVisible, setIsVisible] = useState(true);
 
   const onCancel = () => {
     addToolResult({
@@ -88,10 +87,7 @@ const FundCardContainer: React.FC<FundCardContainerProps> = ({
         message: "Funding cancelled",
       },
     });
-    // setIsVisible(false);
   };
-
-  //if (!isVisible) return null;
 
   return (
     <div className="flex flex-col gap-2 p-4 border border-[#ddf813] rounded-lg mt-4 mb-4 bg-zinc-900 text-white">

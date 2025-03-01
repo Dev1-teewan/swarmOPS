@@ -16,9 +16,9 @@ export function InfoModal({ open, onOpenChange }: InfoModalProps) {
   const features = [
     {
       icon: Bot,
-      title: "AI Swarm Intelligence",
+      title: "MPC-Powered Secure Wallets",
       description:
-        "Multiple AI agents collaborate autonomously as a swarm to execute your trading strategy with optimal performance and minimal footprint.",
+        "Uses Coinbase Server Signer to create subwallets without storing private keys, ensuring self-custody with added security.",
     },
     {
       icon: Shield,
@@ -44,8 +44,8 @@ export function InfoModal({ open, onOpenChange }: InfoModalProps) {
     "Connect your Ethereum wallet securely",
     "Create your personalized AI agent swarm",
     "Set your privacy preferences and risk tolerance",
-    "Fund your swarm's wallet network",
-    "Let the AI optimize your trading strategy",
+    "Fund your swarms",
+    "Interact with an AI agent to execute on the swarms",
   ];
 
   return (
@@ -55,15 +55,12 @@ export function InfoModal({ open, onOpenChange }: InfoModalProps) {
           <DialogTitle className="text-3xl font-bold text-[#ddf813]">
             Welcome to SwarmOPS
           </DialogTitle>
-          <DialogDescription className="text-white/80 text-lg font-medium">
-            Privacy-focused, AI-powered trading on Ethereum
-          </DialogDescription>
         </DialogHeader>
 
-        <div className="mt-6 space-y-8">
+        <div className="mt-4 space-y-8">
           <p className="text-lg text-white/80">
             SwarmOPS deploys a network of autonomous AI agents on Ethereum, each with its own
-            wallet, executing your trading strategy while preserving your privacy and
+            swarm, executing your trading strategy while preserving your privacy and
             protecting you from MEV attacks.
           </p>
 

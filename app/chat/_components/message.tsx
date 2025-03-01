@@ -35,13 +35,6 @@ export function Message({ msg }: MessageProps) {
                 tool={invocation.toolName}
               />
             }
-            if (invocation.toolName === FUND_NAME) {
-              return <ToolUI
-                key={invocation.toolCallId}
-                toolCallId={invocation.toolCallId}
-                tool={invocation.toolName}
-              />
-            }
             return invocation.state !== "result" ? (
               <ToolUI
                 key={invocation.toolCallId}
