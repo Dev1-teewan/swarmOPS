@@ -333,7 +333,7 @@ const SwarmPortfolioView: React.FC<Props> = ({
               </tr>
             </thead>
             <tbody>
-              {combinedPortfolio?.holdings?.length > 0 ? (
+              {combinedPortfolio?.holdings && combinedPortfolio.holdings.length > 0 ? (
                 combinedPortfolio?.holdings?.map((token, index) => (
                   <tr
                     key={`${token.symbol}-${index}`}
