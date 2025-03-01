@@ -22,24 +22,6 @@ const MenuList = ({ sider, showIcons }: MenuListProps) => {
       label: "Chat",
       onClick: () => router.push("/chat"),
     },
-    {
-      key: "/token",
-      icon: BarChart3,
-      label: "Token Balance",
-      onClick: () => router.push("/token"),
-    },
-    {
-      key: "/history",
-      icon: History,
-      label: "Transaction History",
-      onClick: () => router.push("/history"),
-    },
-    {
-      key: "/setting",
-      icon: Settings,
-      label: "Settings",
-      onClick: () => router.push("/settings"),
-    },
   ]
 
   return (

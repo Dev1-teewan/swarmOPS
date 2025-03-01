@@ -199,15 +199,15 @@ const SwarmPortfolioView: React.FC<Props> = ({
   }, [combinedPortfolio]);
 
   return (
-    <div className="flex flex-col bg-zinc-900 text-white rounded-lg border border-[#ddf813] p-2 gap-2 mt-4 mb-4">
-      {/* Swarm Selection*/}
-      <div className="p-4">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row items-center gap-4">
-          {/* Total Balance */}
-          <h1 className="text-3xl lg:text-2xl font-bold text-left flex-grow truncate">
-            ${combinedPortfolio?.portfolioBalanceInUsd}
-          </h1>
+    <div className="flex flex-col sm:flex-col bg-zinc-900 text-white rounded-lg border border-[#ddf813] p-2 gap-2 mt-4 mb-4">
+  {/* Swarm Selection*/}
+  <div className="p-4">
+    {/* Header */}
+    <div className="flex-container">
+      {/* Total Balance */}
+      <h1 className="text-3xl lg:text-2xl font-bold text-left truncate">
+        ${combinedPortfolio?.portfolioBalanceInUsd}
+      </h1>
 
           {/* Dropdown & Settings */}
           <div className="flex flex-row items-center gap-2 ml-auto">

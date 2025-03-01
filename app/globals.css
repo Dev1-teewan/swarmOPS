@@ -113,6 +113,45 @@
     @apply bg-background text-foreground;
   }
 }
+@layer onchainkit {
+  @import '@coinbase/onchainkit/styles.css';
+}
+/* ockFundButton */
+[data-testid="ockFundButton"] {
+  color: #ddf813;
+}
+
+[data-testid="ockFundButton"]:hover {
+  background-color: #c4d213 !important;
+  color: black !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  cursor: pointer;
+}
+
+[data-testid="ockFundButton"] {
+  background-color: #ddf813 !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem; 
+}
+
+@media (min-width: 640px) { 
+  .flex-container {
+    flex-direction: row;
+  }
+}
 
 .custom-button {
   background-color: #3f3f46 !important;
