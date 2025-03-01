@@ -65,7 +65,7 @@ export interface SwapTransactionResult {
 export async function POST(request: NextRequest) {
   try {
     const privyUser = await verifyTokenAndGetPrivyUser(request);
-    ensureCoinbaseConnection();
+    await ensureCoinbaseConnection();
 
     const validateReq = createSwapSchema.safeParse(await request.json());
     if (!validateReq.success) {
