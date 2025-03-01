@@ -46,7 +46,7 @@ const SwarmPortfolioView: React.FC<Props> = ({
 }) => {
   const [selectedSwarm, setSelectedSwarm] = useState<Swarm | null>(null);
   const [swarms, setSwarms] = useState<Swarm[]>([]);
-  const [activeTab, setActiveTab] = useState("Swarm Overview");
+  const [activeTab, setActiveTab] = useState("Swarm");
   const [combinedPortfolio, setCombinedPortfolio] =
     useState<ICombinedPortfolio | null>();
   const [tokenPrices, setTokenPrices] = useState<
@@ -294,30 +294,30 @@ const SwarmPortfolioView: React.FC<Props> = ({
           <div className="grid grid-cols-2 gap-1 p-1">
             <button
               className={`py-1 text-center text-xs rounded transition-colors duration-200 ${
-                activeTab === "Swarm Overview"
-                  ? "bg-[#ddf813] text-zinc-900"
+                activeTab === "Swarm"
+                  ? "bg-[#ddf813] text-zinc-900 font-bold"
                   : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
               }`}
-              onClick={() => setActiveTab("Swarm Overview")}
+              onClick={() => setActiveTab("Swarm")}
             >
               Swarm
             </button>
             <button
               className={`py-1 text-center text-xs rounded transition-colors duration-200 ${
-                activeTab === "Wallet Overview"
-                  ? "bg-[#ddf813] text-zinc-900"
+                activeTab === "Wallet"
+                  ? "bg-[#ddf813] text-zinc-900 font-bold"
                   : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
               }`}
-              onClick={() => setActiveTab("Wallet Overview")}
+              onClick={() => setActiveTab("Wallet")}
             >
-              Wallets
+              Individual Wallets
             </button>
           </div>
         </div>
       </div>
 
       {/* Swarm Overview */}
-      {activeTab === "Swarm Overview" ? (
+      {activeTab === "Swarm" ? (
         <div className="flex-1 px-4 mb-3 overflow-auto">
           <table className="w-full border-collapse text-sm">
             <thead>
