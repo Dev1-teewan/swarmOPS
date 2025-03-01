@@ -93,23 +93,4 @@ export class CdpAgentkit {
     )(args);
   }
 
-  // /**
-  //  * Exports wallet data required to re-instantiate the wallet
-  //  *
-  //  * @returns JSON string of wallet data including wallet_id and seed
-  //  */
-  // async exportWallet(): Promise<string> {
-  //   if (!this.wallets) {
-  //     throw Error(
-  //       "Unable to export wallet. Agentkit is not configured with a wallet."
-  //     );
-  //   }
-
-  //   // TODO: export one by one
-  //   const walletData = this.wallets[0].export();
-  //   return JSON.stringify({
-  //     ...walletData,
-  //     defaultAddressId: (await this.wallets[0].getDefaultAddress()).getId(),
-  //   });
-  // }
 }
