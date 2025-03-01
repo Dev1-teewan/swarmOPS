@@ -92,32 +92,30 @@ export async function POST(request: NextRequest) {
       })
     );
 
+    // Note: Skip balance check for now
     // Get balances for each wallet
-    const balances = await Promise.all(
-      providerWallets.map(async (wallet) => {
-        const balance = await wallet.getBalance(Coinbase.toAssetId(validateReq.data.inputToken.symbol));
-        return new Decimal(balance);
-      })
-    );
+    // const balances = await Promise.all(
+    //   providerWallets.map(async (wallet) => {
+    //     const balance = await wallet.getBalance(Coinbase.toAssetId(validateReq.data.inputToken.symbol));
+    //     return new Decimal(balance);
+    //   })
+    // );
 
-    const totalBalance = balances.reduce((acc, balance) => acc.plus(balance), new Decimal(0));
+    // const totalBalance = balances.reduce((acc, balance) => acc.plus(balance), new Decimal(0));
     const inputAmount = new Decimal(validateReq.data.inputAmount);
 
     const swapTransactionResult: SwapTransactionResult[] = [];
 
-    await Promise.all(providerWallets.map(async (wallet, i) => {
-      const walletBalance = balances[i];
-      const proportion = walletBalance.dividedBy(totalBalance);
-      let amountToSwap = inputAmount.times(proportion);
+    await Promise.all(providerWallets.map(async (wallet) => {
+      // const walletBalance = balances[i];
+      // const proportion = walletBalance.dividedBy(totalBalance);
+      let amountToSwap = inputAmount.div(providerWallets.length);
 
       // Ensure amountToSwap is not more than walletBalance
-      if (amountToSwap.greaterThan(walletBalance)) {
-        amountToSwap = walletBalance;
-      }
-      console.log({amountToSwap})
-      console.log({walletBalance})
-      console.log(await wallet.listAddresses())
-
+      // if (amountToSwap.greaterThan(walletBalance)) {
+      //   amountToSwap = walletBalance;
+      // }
+  
       // Limit the precision of amountToSwap to avoid BigInt conversion issues
       amountToSwap = amountToSwap.toDecimalPlaces(validateReq.data.inputToken.decimals, Decimal.ROUND_DOWN);
 
