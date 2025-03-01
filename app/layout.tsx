@@ -4,6 +4,7 @@ import Privy from "@/provider/privy";
 import { ThemeProvider } from "@/components/theme-provider";
 
 import "./globals.css";
+import OnchainKitProvider from "@/provider/onchainKit";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,7 +40,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Privy>{children}</Privy>
+          <Privy>
+            <OnchainKitProvider>
+              {children}
+            </OnchainKitProvider>
+          </Privy>
         </ThemeProvider>
       </body>
     </html>

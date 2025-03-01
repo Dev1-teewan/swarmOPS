@@ -3,6 +3,8 @@ import CreateSwarm from "./tool-ui/swarm/create-swarm";
 import { useChatStore } from "@/app/_store/useChatStore";
 import { CREATE_SWARM_NAME, PORTFOLIO_NAME, SWAP_NAME } from "@/ai-swarm/action-names";
 import SwarmPortfolioView from "./tool-ui/portfolio/portfolio";
+import { FundCard } from "@coinbase/onchainkit/fund"
+import { FUND_NAME } from "@/ai-swarm/cdp/actions/fund/name";
 
 interface ToolUIProps {
   toolCallId: string;
@@ -48,6 +50,15 @@ export const ToolUI = ({ toolCallId, tool }: ToolUIProps) => {
             result: {},
           })}
           setResponseLoading={setResponseLoading}
+        />
+      )
+    case FUND_NAME:
+      return (
+        <FundCard
+          assetSymbol="ETH"
+          country="US"
+          currency="USD"
+          presetAmountInputs={['10', '20', '100']}
         />
       )
     default:

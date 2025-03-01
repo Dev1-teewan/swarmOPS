@@ -12,6 +12,7 @@ import { TransferAction } from "./transfer";
 import { CreateSwarmAction } from "./create-swarm";
 import { SwapAction } from "./swap";
 import { PortfolioAction } from "./show-portfolio"
+import { FundAction } from "./fund";
 
 // Song: Should rename/ repurpose this to Tools instead of actions
 export function getAllCdpActions(): CdpAction<CdpActionSchemaAny, any>[] {
@@ -28,6 +29,7 @@ export function getAllCdpActions(): CdpAction<CdpActionSchemaAny, any>[] {
     new CreateSwarmAction(),
     new SwapAction(),
     new PortfolioAction(),
+    new FundAction()
   ];
 }
 

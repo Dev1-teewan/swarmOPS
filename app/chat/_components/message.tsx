@@ -1,6 +1,7 @@
 import type { Message } from "ai";
 import { ToolUI } from "./tool-ui";
 import { PORTFOLIO_NAME } from "@/ai-swarm/action-names";
+import { FUND_NAME } from "@/ai-swarm/cdp/actions/fund/name";
 
 interface MessageProps {
   key: number;
@@ -26,8 +27,15 @@ export function Message({ msg }: MessageProps) {
           
           if (part.type === "tool-invocation") {
             const invocation = part.toolInvocation;
-            // special case for portfolio view - always show
+            // special case for portfolio view and fund view - always show
             if (invocation.toolName === PORTFOLIO_NAME) {
+              return <ToolUI
+                key={invocation.toolCallId}
+                toolCallId={invocation.toolCallId}
+                tool={invocation.toolName}
+              />
+            }
+            if (invocation.toolName === FUND_NAME) {
               return <ToolUI
                 key={invocation.toolCallId}
                 toolCallId={invocation.toolCallId}

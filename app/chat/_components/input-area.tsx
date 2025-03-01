@@ -9,7 +9,7 @@ interface InputAreaProps {
   handleSendMessage: () => void;
 }
 
-const inputSuggestions = ["Create a swarm", "Execute swap", "View portfolio"];
+const inputSuggestions = ["Create a swarm", "Execute swap", "View portfolio", "Fund main wallet"];
 
 const InputArea: React.FC<InputAreaProps> = ({
   inputMessage,

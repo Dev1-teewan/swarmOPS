@@ -10,3 +10,4 @@ export * from "./request-faucet-funds/types";
 export * from "./trade/types";
 export * from "./transfer/types";
 export * from "./create-swarm/types"
+export * from "./fund/types"
