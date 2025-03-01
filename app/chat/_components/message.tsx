@@ -1,7 +1,6 @@
 import type { Message } from "ai";
 import { ToolUI } from "./tool-ui";
 import { PORTFOLIO_NAME } from "@/ai-swarm/action-names";
-import { FUND_NAME } from "@/ai-swarm/cdp/actions/fund/name";
 
 interface MessageProps {
   key: number;

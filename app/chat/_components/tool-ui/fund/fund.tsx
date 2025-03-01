@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode } from "react";
 import type { FundCardPropsReact } from "@coinbase/onchainkit/fund";
 import {
   FundCardAmountInput,
@@ -79,7 +79,6 @@ const FundCardContainer: React.FC<FundCardContainerProps> = ({
   addToolResult,
   toolCallId,
 }) => {
-
   const onCancel = () => {
     addToolResult({
       toolCallId,

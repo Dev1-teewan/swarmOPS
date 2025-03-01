@@ -3,9 +3,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Bot, Shield, Zap, Coins, ArrowRight, WalletCards } from "lucide-react";
+import { Bot, Shield, Zap, WalletCards } from "lucide-react";
 
 interface InfoModalProps {
   open: boolean;
