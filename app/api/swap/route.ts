@@ -88,7 +88,6 @@ export async function POST(request: NextRequest) {
     const providerWallets: Wallet[] = await Promise.all(
       subWallets.map(async (subWallet) => {
         const wallet = await Wallet.fetch(subWallet.provider_id);
-        wallet.setSeed(subWallet.seed);        
         return wallet;
       })
     );
