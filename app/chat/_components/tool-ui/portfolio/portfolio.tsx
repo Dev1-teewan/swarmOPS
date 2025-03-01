@@ -70,6 +70,25 @@ const SwarmPortfolioView: React.FC<Props> = ({
   //   })
   // })
 
+  const onWithdraw = async () => {
+    try {
+      const accessToken = (await getAccessToken()) || "";
+      const swapResults = await fetch("/api/withdraw", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: "Bearer " + accessToken,
+        },
+        body: JSON.stringify({
+          swarmId: selectedSwarm?.id, // Include selected swarm ID
+        }),
+      });
+    } catch (error) {
+      console.log("Failed to withdraw:", error);
+      throw error
+    }
+  }
+
   useEffect(() => {
     const fetchSwarms = async () => {
       try {
@@ -246,7 +265,10 @@ const SwarmPortfolioView: React.FC<Props> = ({
                   <DropdownMenu.Item className="px-3 py-1 cursor-pointer hover:bg-zinc-800 rounded">
                     Fund
                   </DropdownMenu.Item>
-                  <DropdownMenu.Item className="px-3 py-1 cursor-pointer hover:bg-zinc-800 rounded">
+                  <DropdownMenu.Item 
+                    className="px-3 py-1 cursor-pointer hover:bg-zinc-800 rounded"
+                    onClick={onWithdraw}
+                  >
                     Withdraw
                   </DropdownMenu.Item>
                   <DropdownMenu.Item className="px-3 py-1 cursor-pointer hover:bg-zinc-800 rounded">

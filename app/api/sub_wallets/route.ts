@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { supabase } from "@/lib/";
-import { Wallet } from "@coinbase/coinbase-sdk";
+import { Coinbase, Wallet } from "@coinbase/coinbase-sdk";
 import { ensureCoinbaseConnection } from "@/lib";
 import { NextRequest, NextResponse } from "next/server";
 import { convertToApiError, ValidationError } from "@/lib/errors";
@@ -9,36 +9,8 @@ import { verifyTokenAndGetPrivyUser } from "@/services/privy/verify-token-get-us
 export interface SubWallet {
   id: string
   publicKey: string;
-  privateKey: string;
   providerId: string;
-  seed: string;
 }
-
-// Wallet object structure
-// {
-// wallet: Wallet {
-//   addresses: [ [WalletAddress] ],
-//   addressPathPrefix: "m/44'/60'/0'/0",
-//   model: {
-//     default_address: [Object],
-//     feature_set: [Object],
-//     id: 'be703182-5632-48aa-89db-1c5d881a8319',
-//     network_id: 'base-sepolia'
-//   },
-//   master: HDKey {
-//     depth: 0,
-//     index: 0,
-//     chainCode: [Uint8Array],
-//     parentFingerprint: 0,
-//     versions: [Object],
-//     privKey: 92949405266233885809292074147499149626436066739950719990353184531137194077143n,
-//     privKeyBytes: [Uint8Array],
-//     pubKey: [Uint8Array],
-//     pubHash: [Uint8Array]
-//   },
-//     seed: 'daac3f9cd34657c830a3468812e83222d3c8e06d03334571f122cab6c840f2b0'
-//   }
-// }
 
 const createSubWalletsSchema = z.object({
   swarmId: z.string().uuid("Invalid swarm ID"),
@@ -49,7 +21,7 @@ const createSubWalletsSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     await verifyTokenAndGetPrivyUser(request);
-    ensureCoinbaseConnection();
+    await ensureCoinbaseConnection();
 
     const validateReq = createSubWalletsSchema.safeParse(await request.json());
     if (!validateReq.success) {
@@ -62,37 +34,29 @@ export async function POST(request: NextRequest) {
     for (let i = 0; i < numSubWallets; i++) {
       const wallet = await Wallet.create({ networkId: "base-mainnet" });
       const walletId = wallet.getId() as string;
-      const walletData = wallet.export();
-      const seed = walletData.seed;
-
       const addresses = await wallet.listAddresses();
+      // Not sure how to get the publicKey of wallet, so hacky stuff we do here. Whatever for now
       const walletAddress = await wallet.getAddress(addresses[0].getId());
       if (!walletAddress) {
         throw new Error("Wallet address is undefined");
       }
       const walletAddressParsed = parseWalletAddress(walletAddress.toString());
       const publicKey = walletAddressParsed.addressId;
-      const privateKey = walletAddress?.export() as string;
       subWallets.push({
         id: walletId,
         publicKey,
-        privateKey,
         providerId: walletId,
-        seed,
       });
     }
     console.log({ subWallets });
 
-    // data, error not in use
-    const {} = await supabase
+    await supabase
       .from("sub_wallets")
       .insert(
         subWallets.map((subwallet) => ({
           swarm_id: swarmId,
           public_key: subwallet.publicKey,
-          private_key: subwallet.privateKey,
           provider_id: subwallet.providerId,
-          seed: subwallet.seed,
         }))
       )
       .select();

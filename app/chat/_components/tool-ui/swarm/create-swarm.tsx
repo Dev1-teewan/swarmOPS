@@ -126,7 +126,7 @@ const CreateSwarm: React.FC<CreateSwarmProps> = ({
       messageApi.open({
         type: "loading",
         content: "Creating swarm...",
-        duration: 4,
+        duration: 10,
       });
 
       const swarmData = {
