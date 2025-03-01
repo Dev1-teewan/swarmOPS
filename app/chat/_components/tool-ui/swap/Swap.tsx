@@ -75,6 +75,7 @@ const Swap: React.FC<Props> = ({
   const { getAccessToken } = usePrivy();
 
   const onCancel = () => {
+    
     addToolResult({
       toolCallId,
       result: {

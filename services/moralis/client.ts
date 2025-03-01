@@ -4,7 +4,7 @@ let moralisInstance: typeof Moralis | null = null;
 
 export const getMoralis = async () => {
   if (!process.env.NEXT_PUBLIC_MORALIS_KEY) {
-    throw new Error("NEXT_PUBLIC_COINBASE_CLIENT_API_KEY is required");
+    throw new Error("NEXT_PUBLIC_MORALIS_KEY is required");
   }
 
   if (!moralisInstance) {
