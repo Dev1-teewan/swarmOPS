@@ -140,6 +140,11 @@ button.wallet-adapter-button-trigger:hover {
   color: #cfe907 !important;
 }
 
+.token-image {
+  margin-left: -4px;
+  mask: radial-gradient(12px at -5px 50%, transparent 99%, #fff 100%)
+}
+
 @keyframes custom-bounce {
   0%,
   100% {

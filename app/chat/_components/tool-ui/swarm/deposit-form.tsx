@@ -303,7 +303,7 @@ export function DepositForm({
               variant="outline"
               size="sm"
               onClick={() => dispatch({ type: "RESET_ALLOCATIONS" })}
-              className="bg-[#665c00]/10 border-[#ddf813]/20 hover:bg-[#ddf813]/30"
+              className="bg-zinc-800 border-[#ddf813]/20 hover:bg-[#ddf813]/30"
             >
               <RefreshCw className="h-4 w-4" />
             </Button>
@@ -311,7 +311,7 @@ export function DepositForm({
               variant="outline"
               size="sm"
               onClick={() => dispatch({ type: "RANDOMIZE_ALLOCATIONS" })}
-              className="bg-[#665c00]/10 border-[#ddf813]/20 hover:bg-[#ddf813]/30"
+              className="bg-zinc-800 border-[#ddf813]/20 hover:bg-[#ddf813]/30"
             >
               <Shuffle className="h-4 w-4" />
             </Button>
@@ -319,7 +319,7 @@ export function DepositForm({
               variant="outline"
               size="sm"
               onClick={() => dispatch({ type: "ADD_WALLET" })}
-              className="bg-[#665c00]/10 border-[#ddf813]/20 hover:bg-[#ddf813]/30"
+              className="bg-zinc-800 border-[#ddf813]/20 hover:bg-[#ddf813]/30"
             >
               <Plus className="h-4 w-4" />
             </Button>
