@@ -1,13 +1,13 @@
 import { z } from "zod";
 import { supabase } from "@/lib/";
-import { Coinbase, Wallet } from "@coinbase/coinbase-sdk";
+import { Wallet } from "@coinbase/coinbase-sdk";
 import { ensureCoinbaseConnection } from "@/lib";
 import { NextRequest, NextResponse } from "next/server";
 import { convertToApiError, ValidationError } from "@/lib/errors";
 import { verifyTokenAndGetPrivyUser } from "@/services/privy/verify-token-get-user";
 
 export interface SubWallet {
-  id: string
+  id: string;
   publicKey: string;
   providerId: string;
 }

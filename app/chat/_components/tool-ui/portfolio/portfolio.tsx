@@ -85,9 +85,9 @@ const SwarmPortfolioView: React.FC<Props> = ({
       });
     } catch (error) {
       console.log("Failed to withdraw:", error);
-      throw error
+      throw error;
     }
-  }
+  };
 
   useEffect(() => {
     const fetchSwarms = async () => {
@@ -196,7 +196,6 @@ const SwarmPortfolioView: React.FC<Props> = ({
     };
 
     getTokenPrices();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [combinedPortfolio]);
 
   return (
@@ -265,7 +264,7 @@ const SwarmPortfolioView: React.FC<Props> = ({
                   <DropdownMenu.Item className="px-3 py-1 cursor-pointer hover:bg-zinc-800 rounded">
                     Fund
                   </DropdownMenu.Item>
-                  <DropdownMenu.Item 
+                  <DropdownMenu.Item
                     className="px-3 py-1 cursor-pointer hover:bg-zinc-800 rounded"
                     onClick={onWithdraw}
                   >
@@ -355,7 +354,8 @@ const SwarmPortfolioView: React.FC<Props> = ({
               </tr>
             </thead>
             <tbody>
-              {combinedPortfolio?.holdings && combinedPortfolio.holdings.length > 0 ? (
+              {combinedPortfolio?.holdings &&
+              combinedPortfolio.holdings.length > 0 ? (
                 combinedPortfolio?.holdings?.map((token, index) => (
                   <tr
                     key={`${token.symbol}-${index}`}
@@ -468,8 +468,13 @@ const SwarmPortfolioView: React.FC<Props> = ({
                     {/* Direct to basescan*/}
                     <button
                       className="direct"
-                      onClick={() => window.open(`https://basescan.org/address/${wallets.address}`, "_blank")}
-                      >
+                      onClick={() =>
+                        window.open(
+                          `https://basescan.org/address/${wallets.address}`,
+                          "_blank"
+                        )
+                      }
+                    >
                       <ArrowUpRight className="h-4 w-4" />
                     </button>
                   </td>

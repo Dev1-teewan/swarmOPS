@@ -1,11 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/";
 import { z } from "zod";
-import { convertToApiError, GenericError, ValidationError } from "@/lib/errors";
-import { APIError, Coinbase, Wallet } from "@coinbase/coinbase-sdk"
+import { supabase } from "@/lib/";
 import { ensureCoinbaseConnection } from "@/lib/";
+import { NextRequest, NextResponse } from "next/server";
+import { APIError, Wallet } from "@coinbase/coinbase-sdk"
+import { convertToApiError, GenericError, ValidationError } from "@/lib/errors";
 import { verifyTokenAndGetPrivyUser } from "@/services/privy/verify-token-get-user";
-import Decimal from "decimal.js";
 
 export interface SubWallet {
   publicKey: string;
